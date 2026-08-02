@@ -22,7 +22,7 @@ jobs:
           cache-dependency-path: marathoncheats.cc2-main/package-lock.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --prefix marathoncheats.cc2-main
 
       - name: Lint
         run: npm run lint
