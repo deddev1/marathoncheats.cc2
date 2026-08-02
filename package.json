@@ -14,7 +14,7 @@
   "engines": {
     "node": ">=22"
   },
-  "devDependencies": {
+  "dependencies": {
     "wrangler": "^4.113.0"
   }
 }
