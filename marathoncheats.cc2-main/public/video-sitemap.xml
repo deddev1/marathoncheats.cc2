@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://marathoncheats.cc/</loc>
+    <video:video>
+      <video:thumbnail_loc>https://marathoncheats.cc/images/marathon-hero-demo-thumbnail.webp</video:thumbnail_loc>
+      <video:title>Marathon Hero Gameplay Demo</video:title>
+      <video:description>Gameplay footage of Marathon Cheats on PC showing ESP overlays, raid movement, and external loader presentation.</video:description>
+      <video:content_loc>https://marathoncheats.cc/videos/marathon-hero-demo.mp4</video:content_loc>
+      <video:player_loc>https://marathoncheats.cc/</video:player_loc>
+      <video:duration>32</video:duration>
+      <video:publication_date>2026-07-21T22:30:08.000Z</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:requires_subscription>no</video:requires_subscription>
+    </video:video>
+  </url>
+
+  <url>
+    <loc>https://marathoncheats.cc/marathoncheats-buy</loc>
+    <video:video>
+      <video:thumbnail_loc>https://marathoncheats.cc/images/marathon-feature-demo-thumbnail.webp</video:thumbnail_loc>
+      <video:title>Marathon ESP &amp; Aimbot Feature Demo</video:title>
+      <video:description>Feature walkthrough of Marathon Cheats showing ESP, aimbot, loot highlights, and in-game overlay behavior on the store page.</video:description>
+      <video:content_loc>https://marathoncheats.cc/videos/marathon-feature-demo.mp4</video:content_loc>
+      <video:player_loc>https://marathoncheats.cc/marathoncheats-buy</video:player_loc>
+      <video:duration>20</video:duration>
+      <video:publication_date>2026-07-21T22:30:11.000Z</video:publication_date>
+      <video:family_friendly>yes</video:family_friendly>
+      <video:requires_subscription>no</video:requires_subscription>
+    </video:video>
+  </url>
+</urlset>

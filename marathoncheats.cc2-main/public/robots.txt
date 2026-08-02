@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Canonical sitemaps for Google Search Console
+Sitemap: https://marathoncheats.cc/sitemap.xml
+Sitemap: https://marathoncheats.cc/video-sitemap.xml
+Sitemap: https://marathoncheats.cc/image-sitemap.xml
