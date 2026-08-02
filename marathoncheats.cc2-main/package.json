@@ -24,7 +24,7 @@
     "validate:image-optimizer": "tsx scripts/validate-image-optimizer.ts",
     "validate:h1-content": "tsx scripts/validate-h1-content.ts",
     "build:site": "npm run convert:images-webp && npm run generate:image-dimensions && npm run generate:video-metadata && npm run generate:sitemap && npm run generate:video-sitemap && npm run generate:image-sitemap && npm run validate:sitemap && npm run validate:video-sitemap && npm run validate:image-sitemap && npm run validate:image-optimizer && npm run validate:canonical-redirects && tsc -b && npm run typecheck:worker && vite build && npm run validate:seo && npm run validate:no-dist-headers && npm run prerender && npm run validate:seo:prerendered && npm run validate:h1-content && npm run prepare:cloudflare-deploy",
-    "build": "npm ci && npm run build:site",
+    "build": "npm ci --include=dev && npm run build:site",
     "typecheck:worker": "tsc -p tsconfig.worker.json",
     "lint": "eslint .",
     "preview": "vite preview",

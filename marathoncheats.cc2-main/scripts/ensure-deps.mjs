@@ -2,17 +2,26 @@ import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
-const markerPath = join(process.cwd(), 'node_modules', 'sharp', 'package.json');
+function buildDepsInstalled(cwd) {
+  const appModules = join(cwd, 'node_modules');
+  return (
+    existsSync(join(appModules, 'sharp', 'package.json'))
+    && existsSync(join(appModules, 'typescript', 'package.json'))
+    && existsSync(join(appModules, 'vite', 'package.json'))
+  );
+}
 
 export async function ensureDependencies() {
-  if (existsSync(markerPath)) {
+  const cwd = process.cwd();
+
+  if (buildDepsInstalled(cwd)) {
     return;
   }
 
   console.log('Dependencies missing; running npm ci before build...');
 
-  const result = spawnSync('npm', ['ci'], {
-    cwd: process.cwd(),
+  const result = spawnSync('npm', ['ci', '--include=dev'], {
+    cwd,
     stdio: 'inherit',
   });
 
@@ -20,8 +29,8 @@ export async function ensureDependencies() {
     process.exit(result.status ?? 1);
   }
 
-  if (!existsSync(markerPath)) {
-    console.error('npm ci completed but sharp is still missing.');
+  if (!buildDepsInstalled(cwd)) {
+    console.error('npm ci completed but build dependencies are still missing.');
     process.exit(1);
   }
 }

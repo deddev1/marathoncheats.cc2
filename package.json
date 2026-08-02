@@ -5,7 +5,9 @@
     "marathoncheats.cc2-main"
   ],
   "scripts": {
-    "install:app": "npm ci --prefix marathoncheats.cc2-main",
+    "install:app": "bash install-app.sh",
+    "postinstall": "bash install-app.sh",
+    "prebuild": "bash install-app.sh",
     "build": "bash build.sh",
     "lint": "npm --prefix marathoncheats.cc2-main run lint",
     "deploy": "bash deploy.sh deploy",
