@@ -6,11 +6,15 @@
   ],
   "scripts": {
     "install:app": "npm ci --prefix marathoncheats.cc2-main",
-    "build": "npm --prefix marathoncheats.cc2-main run build",
+    "build": "bash build.sh",
     "lint": "npm --prefix marathoncheats.cc2-main run lint",
-    "deploy": "npm --prefix marathoncheats.cc2-main run deploy"
+    "deploy": "bash deploy.sh deploy",
+    "deploy:preview": "bash deploy.sh versions upload"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "wrangler": "^4.113.0"
   }
 }

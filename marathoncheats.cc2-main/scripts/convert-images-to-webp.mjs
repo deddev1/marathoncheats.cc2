@@ -4,19 +4,19 @@
  */
 import { readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
-import sharp from 'sharp';
+import { ensureDependencies } from './ensure-deps.mjs';
 
 const publicDir = join(process.cwd(), 'public');
 let converted = 0;
 let skipped = 0;
 
-async function walk(dir) {
+async function walk(dir, sharp) {
   for (const name of readdirSync(dir)) {
     const fullPath = join(dir, name);
     const stats = statSync(fullPath);
 
     if (stats.isDirectory()) {
-      await walk(fullPath);
+      await walk(fullPath, sharp);
       continue;
     }
 
@@ -43,5 +43,7 @@ async function walk(dir) {
   }
 }
 
-await walk(publicDir);
+await ensureDependencies();
+const sharp = (await import('sharp')).default;
+await walk(publicDir, sharp);
 console.log(`WebP conversion complete (${converted} created/updated, ${skipped} up-to-date).`);
