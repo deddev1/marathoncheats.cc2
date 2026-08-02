@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useI18n, LANGUAGES } from '../i18n';
+import { LANGUAGES } from '../i18n/languages';
+import { useI18n } from '../i18n/useI18n';
 import { useScrollSpy, type NavSectionId } from '../hooks/useScrollSpy';
 import { scrollToSectionById } from '../utils/scrollToSection';
 import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
@@ -39,6 +40,13 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(location.pathname);
+
+  if (location.pathname !== prevPathname) {
+    setPrevPathname(location.pathname);
+    setMenuOpen(false);
+    setLangOpen(false);
+  }
 
   const langRef = useRef<HTMLDivElement>(null);
 
@@ -78,11 +86,6 @@ export function Navbar() {
       document.body.style.overflow = '';
     };
   }, [menuOpen]);
-
-  useEffect(() => {
-    closeMobileMenu();
-    setLangOpen(false);
-  }, [location.pathname, closeMobileMenu]);
 
   useEffect(() => {
     if (!menuOpen) return;

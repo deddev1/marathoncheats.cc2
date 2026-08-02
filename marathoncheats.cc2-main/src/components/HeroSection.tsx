@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
 import { getSiteVideo } from '../content/videos';
-import { useI18n } from '../i18n';
+import { useI18n } from '../i18n/useI18n';
 import { HOME_PAGE_HEADING } from '../seo/pageHeadings';
 import { VideoPlayer } from './VideoPlayer';
 

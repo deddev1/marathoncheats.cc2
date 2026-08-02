@@ -1,6 +1,6 @@
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { BLOG_POSTS } from '../src/pages/Blog';
+import { BLOG_POSTS } from '../src/content/blogPosts';
 import {
   BLOG_LIST_HEADING,
   HOME_PAGE_HEADING,

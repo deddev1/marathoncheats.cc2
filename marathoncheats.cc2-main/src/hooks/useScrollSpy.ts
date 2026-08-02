@@ -34,7 +34,6 @@ export function useScrollSpy(enabled: boolean) {
 
   useEffect(() => {
     if (!enabled) {
-      setActiveSection('top');
       return;
     }
 
@@ -95,5 +94,5 @@ export function useScrollSpy(enabled: boolean) {
     };
   }, [enabled]);
 
-  return activeSection;
+  return enabled ? activeSection : 'top';
 }
