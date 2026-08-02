@@ -3,7 +3,7 @@ compatibility_date = "2025-01-01"
 main = "marathoncheats.cc2-main/worker/index.ts"
 
 [build]
-command = "npm ci --prefix marathoncheats.cc2-main && npm --prefix marathoncheats.cc2-main run build"
+command = "npm --prefix marathoncheats.cc2-main run build"
 
 [assets]
 directory = "./marathoncheats.cc2-main/dist"

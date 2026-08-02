@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "install:app": "npm ci --prefix marathoncheats.cc2-main",
-    "build": "npm ci --prefix marathoncheats.cc2-main && npm --prefix marathoncheats.cc2-main run build",
+    "build": "npm --prefix marathoncheats.cc2-main run build",
     "lint": "npm --prefix marathoncheats.cc2-main run lint",
     "deploy": "npm --prefix marathoncheats.cc2-main run deploy"
   },
