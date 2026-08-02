@@ -1,0 +1,13 @@
+{
+  "name": "marathoncheats.cc2",
+  "private": true,
+  "scripts": {
+    "install:app": "npm --prefix marathoncheats.cc2-main install",
+    "build": "npm --prefix marathoncheats.cc2-main run build",
+    "lint": "npm --prefix marathoncheats.cc2-main run lint",
+    "deploy": "npm --prefix marathoncheats.cc2-main run deploy"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

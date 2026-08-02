@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { getSiteVideo } from '../src/content/videos';
 import { HOME_FAQS, STORE_FAQS } from '../src/content/faqs';
-import { BLOG_POSTS } from '../src/pages/Blog';
+import { BLOG_POSTS } from '../src/content/blogPosts';
 import { buildFaqPageSchema } from '../src/seo/faqSchema';
 import {
   BLOG_POST_SEO,

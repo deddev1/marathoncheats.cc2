@@ -1,4 +1,4 @@
-import { BLOG_POSTS } from '../pages/Blog';
+import { BLOG_POSTS } from '../content/blogPosts';
 import { ROUTE_SEO } from './config';
 
 export type SitemapRoute = {

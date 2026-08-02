@@ -31,8 +31,9 @@ export function VideoPlayer({
   const [playing, setPlaying] = useState(autoPlay);
 
   useEffect(() => {
+    const video = videoRef.current;
     return () => {
-      videoRef.current?.pause();
+      video?.pause();
     };
   }, []);
 

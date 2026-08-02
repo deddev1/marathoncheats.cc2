@@ -90,14 +90,14 @@ export function Seo({
   const ogImageWidth = imageDimensions?.width ?? OG_IMAGE_WIDTH;
   const ogImageHeight = imageDimensions?.height ?? OG_IMAGE_HEIGHT;
   const robots = noindex ? 'noindex, follow' : 'index, follow';
-  const structuredDataItems = structuredData
-    ? Array.isArray(structuredData)
-      ? structuredData
-      : [structuredData]
-    : [];
-  const structuredDataJson = structuredDataItems.map(item => JSON.stringify(item)).join('\n');
 
   useEffect(() => {
+    const structuredDataItems = structuredData
+      ? Array.isArray(structuredData)
+        ? structuredData
+        : [structuredData]
+      : [];
+
     document.title = title;
     document.documentElement.lang = lang;
 
@@ -163,7 +163,7 @@ export function Seo({
     path,
     publishedTime,
     robots,
-    structuredDataJson,
+    structuredData,
     title,
     type,
   ]);
