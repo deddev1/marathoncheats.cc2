@@ -1,5 +1,9 @@
 import { SITE_VIDEOS, getVideoWatchPath } from '../src/content/videos';
-import { buildEnPrefixStripRedirect, buildSeoAssetTrailingSlashRedirect } from '../src/seo/localePaths';
+import {
+  SEO_ASSET_PATHS,
+  buildEnPrefixStripRedirect,
+  buildSeoAssetTrailingSlashRedirect,
+} from '../src/seo/localePaths';
 
 /** Must match `SITE_URL` in src/seo/config.ts */
 export const CANONICAL_ORIGIN = 'https://marathoncheats.cc';
@@ -25,11 +29,47 @@ const SECURITY_HEADERS: Record<string, string> = {
 
 const LONG_CACHE_PATH_PREFIXES = ['/assets/', '/images/', '/videos/'];
 const SHORT_CACHE_PATHS = new Set([
+  '/sitemap-index.xml',
   '/sitemap.xml',
   '/video-sitemap.xml',
   '/image-sitemap.xml',
   '/robots.txt',
 ]);
+
+const SEO_ASSET_CONTENT_TYPES: Record<string, string> = {
+  '/robots.txt': 'text/plain; charset=utf-8',
+  '/sitemap-index.xml': 'application/xml; charset=utf-8',
+  '/sitemap.xml': 'application/xml; charset=utf-8',
+  '/video-sitemap.xml': 'application/xml; charset=utf-8',
+  '/image-sitemap.xml': 'application/xml; charset=utf-8',
+};
+
+function normalizePathname(pathname: string) {
+  return pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
+}
+
+function looksLikeHtml(body: string) {
+  const trimmed = body.trimStart().toLowerCase();
+  return trimmed.startsWith('<!doctype html') || trimmed.startsWith('<html');
+}
+
+/** Serve robots/sitemap files directly so SPA fallback never returns HTML to crawlers. */
+export async function serveSeoAsset(request: Request, env: Env, pathname: string): Promise<Response | null> {
+  const normalized = normalizePathname(pathname);
+  if (!SEO_ASSET_PATHS.has(normalized)) return null;
+
+  const assetUrl = new URL(normalized, request.url);
+  const assetResponse = await env.ASSETS.fetch(new Request(assetUrl.toString(), request));
+  if (!assetResponse.ok) return null;
+
+  const body = await assetResponse.text();
+  if (looksLikeHtml(body)) return null;
+
+  const headers = new Headers();
+  headers.set('Content-Type', SEO_ASSET_CONTENT_TYPES[normalized] ?? 'application/xml; charset=utf-8');
+  applyResponseHeaders(normalized, headers);
+  return new Response(body, { status: 200, headers });
+}
 
 function requestUsesHttps(request: Request, requestUrl: URL) {
   if (requestUrl.protocol === 'https:') return true;
@@ -152,7 +192,13 @@ export default {
       return withResponseHeaders(redirect, requestUrl.pathname);
     }
 
+    const pathname = normalizePathname(requestUrl.pathname);
+    const seoAsset = await serveSeoAsset(request, env, pathname);
+    if (seoAsset) {
+      return seoAsset;
+    }
+
     const assetResponse = await env.ASSETS.fetch(request);
-    return withResponseHeaders(assetResponse, requestUrl.pathname);
+    return withResponseHeaders(assetResponse, pathname);
   },
 } satisfies ExportedHandler<Env>;
