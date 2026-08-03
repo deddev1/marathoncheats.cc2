@@ -21,6 +21,11 @@ export type SeoLocaleCode = (typeof SEO_LOCALES)[number]['code'];
 
 export const DEFAULT_SEO_LOCALE: SeoLocaleCode = 'en';
 
+/** English uses unprefixed URLs (/blog). Other locales use /{segment}/blog. */
+export function localeUsesUrlPrefix(code: SeoLocaleCode): boolean {
+  return code !== DEFAULT_SEO_LOCALE;
+}
+
 export const SEO_LOCALE_CODES = SEO_LOCALES.map(locale => locale.code) as SeoLocaleCode[];
 
 const segmentByCode = new Map(SEO_LOCALES.map(locale => [locale.code, locale.segment]));
@@ -38,6 +43,13 @@ export function getSeoLocaleSegment(code: SeoLocaleCode): string {
 
 export function isSeoLocaleSegment(segment: string): boolean {
   return codeBySegment.has(segment.toLowerCase() as (typeof SEO_LOCALES)[number]['segment']);
+}
+
+/** Locale URL prefix segments excluding English (en is default at /). */
+export function isPrefixedLocaleSegment(segment: string): boolean {
+  const normalized = segment.toLowerCase();
+  if (normalized === 'en') return false;
+  return isSeoLocaleSegment(normalized);
 }
 
 export function i18nToSeoLocale(i18nCode: string): SeoLocaleCode | undefined {

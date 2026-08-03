@@ -9,7 +9,7 @@ import {
   getMissingH1Words,
 } from '../src/seo/pageHeadings';
 import { ROUTE_SEO } from '../src/seo/config';
-import { SEO_LOCALES } from '../src/seo/locales';
+import { SEO_LOCALES, localeUsesUrlPrefix } from '../src/seo/locales';
 import { buildLocalizedPath } from '../src/seo/localePaths';
 
 type HeadingCase = {
@@ -19,11 +19,30 @@ type HeadingCase = {
 };
 
 const distDir = join(process.cwd(), 'dist');
-const localeSegments = new Set(SEO_LOCALES.map(locale => locale.segment));
+const prefixedLocaleSegments = new Set(
+  SEO_LOCALES.filter(locale => localeUsesUrlPrefix(locale.code)).map(locale => locale.segment),
+);
+
+const englishRouteDirs = new Set([
+  '',
+  'blog',
+  'marathoncheats-buy',
+  'terms',
+  'privacy',
+  'refund',
+  ...BLOG_POSTS.map(post => `blog/${post.slug}`),
+]);
 
 function distPathFor(appPath: string) {
   const localized = buildLocalizedPath('en', appPath);
-  return join(distDir, localized.replace(/^\//, ''), 'index.html');
+  const relative = localized === '/' ? '' : localized.replace(/^\//, '');
+  return join(distDir, relative, 'index.html');
+}
+
+function shouldCountPrerenderFile(relativeDir: string) {
+  const firstSegment = relativeDir.split('/').filter(Boolean)[0];
+  if (firstSegment && prefixedLocaleSegments.has(firstSegment)) return true;
+  return englishRouteDirs.has(relativeDir);
 }
 
 function collectHtmlFiles(dir: string, relativeDir = '', files: string[] = []): string[] {
@@ -39,11 +58,8 @@ function collectHtmlFiles(dir: string, relativeDir = '', files: string[] = []): 
       collectHtmlFiles(fullPath, nextRelative, files);
       continue;
     }
-    if (entry === 'index.html') {
-      const firstSegment = relativeDir.split('/').filter(Boolean)[0];
-      if (firstSegment && localeSegments.has(firstSegment)) {
-        files.push(fullPath);
-      }
+    if (entry === 'index.html' && shouldCountPrerenderFile(relativeDir)) {
+      files.push(fullPath);
     }
   }
   return files;
