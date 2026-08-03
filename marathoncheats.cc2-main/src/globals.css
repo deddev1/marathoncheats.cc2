@@ -2793,9 +2793,11 @@ a.btn-primary[href*='marathoncheats-buy'] {
 .site-nav__lang-trigger {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
+  min-width: 40px;
   min-height: 40px;
-  padding: 8px 12px;
+  padding: 8px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-dim);
@@ -2837,8 +2839,8 @@ a.btn-primary[href*='marathoncheats-buy'] {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  min-width: 180px;
-  max-height: min(320px, 70dvh);
+  min-width: 52px;
+  max-height: min(280px, 70dvh);
   overflow-y: auto;
   background: var(--bg-elevated);
   border: 1px solid var(--border-dim);
@@ -2852,10 +2854,12 @@ a.btn-primary[href*='marathoncheats-buy'] {
 .site-nav__lang-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 0;
   width: 100%;
-  padding: 10px 12px;
-  min-height: 44px;
+  padding: 8px;
+  min-height: 40px;
+  min-width: 40px;
   background: transparent;
   border: none;
   border-radius: var(--radius-sm);
@@ -2980,6 +2984,40 @@ a.btn-primary[href*='marathoncheats-buy'] {
   color: var(--text-muted);
 }
 
+.mobile-nav-panel__lang-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 140px;
+  overflow-y: auto;
+  padding: 2px;
+}
+
+.mobile-nav-panel__lang-flag-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-dim);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.mobile-nav-panel__lang-flag-btn[data-active='true'] {
+  border-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.mobile-nav-panel__lang-flag-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 .mobile-nav-panel__lang-row {
   display: flex;
   align-items: center;
@@ -3098,20 +3136,6 @@ a.btn-primary[href*='marathoncheats-buy'] {
   }
 
   .site-nav__hamburger {
-    display: inline-flex;
-  }
-
-  .site-nav__lang-trigger {
-    min-width: 40px;
-    padding: 8px;
-    justify-content: center;
-  }
-
-  .site-nav__lang-trigger span:not(:first-child) {
-    display: none;
-  }
-
-  .site-nav__lang-trigger .language-flag {
     display: inline-flex;
   }
 
