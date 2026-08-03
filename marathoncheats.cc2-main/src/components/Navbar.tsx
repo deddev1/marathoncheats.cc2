@@ -11,10 +11,9 @@ import { LanguageFlag } from './LanguageFlag';
 const MOBILE_MQ = '(max-width: 1024px)';
 const BUY_URL = ZADEYO_CHECKOUT_URL;
 
-type NavLink = {
-  label: string;
-  sectionId: NavSectionId;
-};
+type NavLink =
+  | { label: string; sectionId: NavSectionId }
+  | { label: string; to: '/blog' };
 
 const NAV_LINKS: NavLink[] = [
   { label: 'Home', sectionId: 'top' },
@@ -22,6 +21,7 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Why Us', sectionId: 'why-us' },
   { label: 'Pricing', sectionId: 'pricing' },
   { label: 'FAQ', sectionId: 'faq' },
+  { label: 'Blog', to: '/blog' },
 ];
 
 function getSectionHref(sectionId: NavSectionId, isHome: boolean) {
@@ -116,10 +116,30 @@ export function Navbar() {
     [closeMobileMenu, isHome],
   );
 
-  const isLinkActive = (item: NavLink) => isHome && activeSection === item.sectionId;
+  const isLinkActive = (item: NavLink) => {
+    if ('to' in item) {
+      return location.pathname === item.to || location.pathname.startsWith(`${item.to}/`);
+    }
+
+    return isHome && activeSection === item.sectionId;
+  };
 
   const renderNavLink = (item: NavLink, className: string) => {
     const active = isLinkActive(item);
+
+    if ('to' in item) {
+      return (
+        <a
+          key={item.label}
+          href={item.to}
+          className={className}
+          aria-current={active ? 'page' : undefined}
+          onClick={closeMobileMenu}
+        >
+          {item.label}
+        </a>
+      );
+    }
 
     return (
       <a
