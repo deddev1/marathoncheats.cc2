@@ -86,6 +86,15 @@ export function HeroSection() {
             <Link to="/blog" className="hero-section__guides-link" style={{ marginLeft: 16 }}>
               Read our ESP, Aimbot &amp; Spoofer guides →
             </Link>
+            <a
+              href="https://zadeyo.com/blog/marathon-cheats-guide"
+              className="hero-section__guides-link"
+              style={{ marginLeft: 16 }}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read Marathon Guide
+            </a>
           </div>
 
           <div style={{ animation: 'fadeUp 0.7s ease both', animationDelay: '0.36s' }}>
