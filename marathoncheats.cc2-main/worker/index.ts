@@ -1,5 +1,5 @@
 import { SITE_VIDEOS, getVideoWatchPath } from '../src/content/videos';
-import { buildEnPrefixStripRedirect } from '../src/seo/localePaths';
+import { buildEnPrefixStripRedirect, buildSeoAssetTrailingSlashRedirect } from '../src/seo/localePaths';
 
 /** Must match `SITE_URL` in src/seo/config.ts */
 export const CANONICAL_ORIGIN = 'https://marathoncheats.cc';
@@ -79,7 +79,8 @@ export function buildRequestRedirect(request: Request): Response | null {
     return null;
   }
 
-  const pathname = requestUrl.pathname === '/' ? '/' : requestUrl.pathname.replace(/\/$/, '') || '/';
+  const rawPathname = requestUrl.pathname;
+  const pathname = rawPathname === '/' ? '/' : rawPathname.replace(/\/$/, '') || '/';
   const embedPath = VIDEO_WATCH_REDIRECTS[pathname];
 
   let destinationPath = embedPath ?? pathname;
@@ -88,13 +89,21 @@ export function buildRequestRedirect(request: Request): Response | null {
     destinationPath = new URL(localeRedirect).pathname;
   }
 
+  const slashCheckPath =
+    rawPathname.endsWith('/') && rawPathname !== '/' ? `${destinationPath}/` : destinationPath;
+  const seoTrailingSlashRedirect = buildSeoAssetTrailingSlashRedirect(slashCheckPath, requestUrl.search);
+  if (seoTrailingSlashRedirect) {
+    destinationPath = new URL(seoTrailingSlashRedirect).pathname;
+  }
+
   const usesHttps = requestUsesHttps(request, requestUrl);
   const needsHttpsRedirect = !usesHttps;
   const needsWwwRedirect = isWwwHost;
   const needsVideoRedirect = Boolean(embedPath);
   const needsLocaleRedirect = Boolean(localeRedirect);
+  const needsSeoTrailingSlashRedirect = Boolean(seoTrailingSlashRedirect);
 
-  if (!needsHttpsRedirect && !needsWwwRedirect && !needsVideoRedirect && !needsLocaleRedirect) {
+  if (!needsHttpsRedirect && !needsWwwRedirect && !needsVideoRedirect && !needsLocaleRedirect && !needsSeoTrailingSlashRedirect) {
     return null;
   }
 
