@@ -68,11 +68,40 @@ export function buildHreflangAlternates(appPath: string): HreflangAlternate[] {
   return alternates;
 }
 
+/** Paths that must never receive a locale prefix redirect (SEO files, static assets). */
+export const LOCALE_REDIRECT_EXCLUDED_EXACT = new Set([
+  '/robots.txt',
+  '/sitemap.xml',
+  '/video-sitemap.xml',
+  '/image-sitemap.xml',
+  '/manifest.json',
+]);
+
+export const LOCALE_REDIRECT_EXCLUDED_PREFIXES = ['/assets/', '/images/', '/videos/'] as const;
+
+function hasStaticFileExtension(pathname: string) {
+  return /\.[a-z0-9]+$/i.test(pathname);
+}
+
+export function shouldSkipLocaleRedirect(pathname: string): boolean {
+  const normalized = pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
+
+  if (LOCALE_REDIRECT_EXCLUDED_EXACT.has(normalized)) return true;
+  if (LOCALE_REDIRECT_EXCLUDED_PREFIXES.some(prefix => normalized.startsWith(prefix))) return true;
+  if (hasStaticFileExtension(normalized)) return true;
+
+  return false;
+}
+
 /**
  * Returns a canonical /en/... destination when the request path has no locale prefix.
  * Used by the Cloudflare worker for 301 redirects.
  */
 export function buildLegacyLocaleRedirect(pathname: string, search = ''): string | null {
+  if (shouldSkipLocaleRedirect(pathname)) {
+    return null;
+  }
+
   const firstSegment = pathname.split('/').filter(Boolean)[0]?.toLowerCase() ?? '';
 
   if (firstSegment && isSeoLocaleSegment(firstSegment)) {

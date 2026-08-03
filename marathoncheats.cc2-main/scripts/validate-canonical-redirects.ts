@@ -74,6 +74,21 @@ const cases: RedirectCase[] = [
     url: `${CANONICAL_ORIGIN}/en/`,
     expectRedirect: false,
   },
+  {
+    name: 'sitemap.xml is served at root without locale redirect',
+    url: `${CANONICAL_ORIGIN}/sitemap.xml`,
+    expectRedirect: false,
+  },
+  {
+    name: 'robots.txt is served at root without locale redirect',
+    url: `${CANONICAL_ORIGIN}/robots.txt`,
+    expectRedirect: false,
+  },
+  {
+    name: 'static assets are served without locale redirect',
+    url: `${CANONICAL_ORIGIN}/assets/app.js`,
+    expectRedirect: false,
+  },
 ];
 
 const errors: string[] = [];
