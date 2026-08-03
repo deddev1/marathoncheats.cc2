@@ -14,7 +14,7 @@
     "deploy:preview": "bash deploy.sh versions upload"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "dependencies": {
     "wrangler": "^4.113.0"
