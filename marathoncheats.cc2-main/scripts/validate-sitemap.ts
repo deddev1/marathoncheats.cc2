@@ -4,6 +4,7 @@ import { SITEMAP_ROUTES } from '../src/seo/sitemapRoutes';
 import { SEO_LOCALES } from '../src/seo/locales';
 import {
   ROBOTS_PATH,
+  SITEMAP_INDEX_URL,
   SITEMAP_URL,
   buildSitemapEntries,
   formatW3cDate,
@@ -40,7 +41,7 @@ if (!xml.includes('xmlns:xhtml="http://www.w3.org/1999/xhtml"')) {
   fail('sitemap.xml must declare the xhtml namespace for hreflang alternates.');
 }
 
-const expectedCount = SITEMAP_ROUTES.length * SEO_LOCALES.length;
+const expectedCount = SITEMAP_ROUTES.length;
 if (actualLocs.length !== expectedCount) {
   fail(`sitemap.xml has ${actualLocs.length} URLs, expected ${expectedCount}.`);
 }
@@ -115,9 +116,21 @@ SITEMAP_ROUTES.forEach(route => {
 });
 
 const robots = readFileSync(ROBOTS_PATH, 'utf8');
+if (!robots.includes(`Sitemap: ${SITEMAP_INDEX_URL}`)) {
+  fail(`robots.txt must reference ${SITEMAP_INDEX_URL}`);
+}
+
 if (!robots.includes(`Sitemap: ${SITEMAP_URL}`)) {
   fail(`robots.txt must reference ${SITEMAP_URL}`);
 }
+
+expectedEntries.forEach(entry => {
+  entry.alternates.forEach(alternate => {
+    if (!xml.includes(`href="${alternate.href}"`)) {
+      fail(`sitemap.xml is missing hreflang alternate ${alternate.hreflang}: ${alternate.href}`);
+    }
+  });
+});
 
 const unexpectedLocs = actualLocs.filter(loc => !expectedLocs.includes(loc));
 if (unexpectedLocs.length > 0) {

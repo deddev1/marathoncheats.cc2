@@ -77,6 +77,7 @@ export function buildHreflangAlternates(appPath: string): HreflangAlternate[] {
 /** Paths that must never be rewritten (SEO files, static assets). */
 export const LOCALE_REDIRECT_EXCLUDED_EXACT = new Set([
   '/robots.txt',
+  '/sitemap-index.xml',
   '/sitemap.xml',
   '/video-sitemap.xml',
   '/image-sitemap.xml',
@@ -102,6 +103,7 @@ export function shouldSkipLocaleRedirect(pathname: string): boolean {
 /** Canonical SEO asset paths (no trailing slash). */
 export const SEO_ASSET_PATHS = new Set([
   '/robots.txt',
+  '/sitemap-index.xml',
   '/sitemap.xml',
   '/video-sitemap.xml',
   '/image-sitemap.xml',

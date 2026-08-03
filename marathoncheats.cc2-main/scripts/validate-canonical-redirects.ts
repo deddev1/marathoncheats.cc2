@@ -110,6 +110,11 @@ const cases: RedirectCase[] = [
     expectedLocation: `${CANONICAL_ORIGIN}/sitemap.xml`,
   },
   {
+    name: 'sitemap-index.xml is served at root without locale redirect',
+    url: `${CANONICAL_ORIGIN}/sitemap-index.xml`,
+    expectRedirect: false,
+  },
+  {
     name: 'sitemap.xml is served at root without locale redirect',
     url: `${CANONICAL_ORIGIN}/sitemap.xml`,
     expectRedirect: false,
