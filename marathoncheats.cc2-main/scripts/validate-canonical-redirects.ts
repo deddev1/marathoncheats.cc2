@@ -4,7 +4,7 @@ import {
   CANONICAL_HOST,
   CANONICAL_ORIGIN,
 } from '../worker/index';
-import { buildCanonicalUrl } from '../src/seo/config';
+import { buildLocalizedCanonicalUrl } from '../src/seo/config';
 
 type RedirectCase = {
   name: string;
@@ -16,31 +16,32 @@ type RedirectCase = {
 
 const cases: RedirectCase[] = [
   {
-    name: 'apex https homepage',
+    name: 'apex https homepage redirects to /en/',
     url: `${CANONICAL_ORIGIN}/`,
-    expectRedirect: false,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/`,
   },
   {
     name: 'apex http homepage',
     url: `http://${CANONICAL_HOST}/`,
     expectRedirect: true,
-    expectedLocation: `${CANONICAL_ORIGIN}/`,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/`,
   },
   {
     name: 'www https homepage',
     url: `https://www.${CANONICAL_HOST}/`,
     expectRedirect: true,
-    expectedLocation: `${CANONICAL_ORIGIN}/`,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/`,
   },
   {
     name: 'www http deep link',
     url: `http://www.${CANONICAL_HOST}/blog/marathoncheats-esp?ref=test`,
     expectRedirect: true,
-    expectedLocation: `${CANONICAL_ORIGIN}/blog/marathoncheats-esp?ref=test`,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/blog/marathoncheats-esp?ref=test`,
   },
   {
-    name: 'apex https via forwarded proto',
-    url: `http://${CANONICAL_HOST}/blog`,
+    name: 'apex https via forwarded proto on localized blog',
+    url: `http://${CANONICAL_HOST}/en/blog`,
     headers: { 'X-Forwarded-Proto': 'https' },
     expectRedirect: false,
   },
@@ -48,25 +49,30 @@ const cases: RedirectCase[] = [
     name: 'www https store page',
     url: `https://www.${CANONICAL_HOST}/marathoncheats-buy`,
     expectRedirect: true,
-    expectedLocation: `${CANONICAL_ORIGIN}/marathoncheats-buy`,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/marathoncheats-buy`,
   },
   {
     name: 'www https video watch page redirects to homepage',
     url: `https://www.${CANONICAL_HOST}/videos/marathon-hero-demo`,
     expectRedirect: true,
-    expectedLocation: `${CANONICAL_ORIGIN}/`,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/`,
   },
   {
     name: 'apex https video watch page redirects to store',
     url: `${CANONICAL_ORIGIN}/videos/marathon-feature-demo`,
     expectRedirect: true,
-    expectedLocation: `${CANONICAL_ORIGIN}/marathoncheats-buy`,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/marathoncheats-buy`,
   },
   {
     name: 'www http video watch page single-hop redirect',
     url: `http://www.${CANONICAL_HOST}/videos/marathon-hero-demo?ref=test`,
     expectRedirect: true,
-    expectedLocation: `${CANONICAL_ORIGIN}/?ref=test`,
+    expectedLocation: `${CANONICAL_ORIGIN}/en/?ref=test`,
+  },
+  {
+    name: 'localized english homepage is canonical',
+    url: `${CANONICAL_ORIGIN}/en/`,
+    expectRedirect: false,
   },
 ];
 
@@ -100,12 +106,12 @@ if (destination.toString() !== `${CANONICAL_ORIGIN}/blog?utm=1`) {
   errors.push(`buildCanonicalDestination should drop trailing slashes: ${destination.toString()}`);
 }
 
-if (buildCanonicalUrl('/') !== `${CANONICAL_ORIGIN}/`) {
-  errors.push(`Homepage canonical must end with a trailing slash: ${buildCanonicalUrl('/')}`);
+if (buildLocalizedCanonicalUrl('en', '/') !== `${CANONICAL_ORIGIN}/en/`) {
+  errors.push(`English homepage canonical must end with a trailing slash: ${buildLocalizedCanonicalUrl('en', '/')}`);
 }
 
-if (buildCanonicalUrl('/blog') !== `${CANONICAL_ORIGIN}/blog`) {
-  errors.push(`Blog canonical must not end with a trailing slash: ${buildCanonicalUrl('/blog')}`);
+if (buildLocalizedCanonicalUrl('en', '/blog') !== `${CANONICAL_ORIGIN}/en/blog`) {
+  errors.push(`Blog canonical must not end with a trailing slash: ${buildLocalizedCanonicalUrl('en', '/blog')}`);
 }
 
 if (errors.length > 0) {

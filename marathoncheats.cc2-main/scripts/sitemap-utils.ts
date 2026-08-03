@@ -1,12 +1,13 @@
 import { execSync } from 'node:child_process';
 import { readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { buildCanonicalUrl, SITE_URL } from '../src/seo/config';
+import { buildLocalizedCanonicalUrl, buildHreflangAlternates } from '../src/seo/localePaths';
+import { SEO_LOCALES, type SeoLocaleCode } from '../src/seo/locales';
 import { SITEMAP_ROUTES, type SitemapRoute } from '../src/seo/sitemapRoutes';
 
 export const SITEMAP_PATH = join(process.cwd(), 'public', 'sitemap.xml');
 export const ROBOTS_PATH = join(process.cwd(), 'public', 'robots.txt');
-export const SITEMAP_URL = `${SITE_URL}/sitemap.xml`;
+export const SITEMAP_URL = 'https://marathoncheats.cc/sitemap.xml';
 
 const W3C_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -87,20 +88,36 @@ export function resolveRouteLastmod(route: SitemapRoute, buildDate: Date) {
   return formatW3cDate(resolveSourceLastmod(route.sourceFiles, buildDate));
 }
 
-export function buildSitemapEntries(buildDate = new Date()) {
-  return SITEMAP_ROUTES.map(route => {
-    const loc = buildCanonicalUrl(route.path);
-    const lastmod = resolveRouteLastmod(route, buildDate);
+export type SitemapEntry = {
+  appPath: string;
+  locale: SeoLocaleCode;
+  loc: string;
+  lastmod: string;
+  alternates: ReturnType<typeof buildHreflangAlternates>;
+};
 
-    return {
-      path: route.path,
-      loc,
-      lastmod,
-    };
-  });
+export function buildSitemapEntries(buildDate = new Date()): SitemapEntry[] {
+  const entries: SitemapEntry[] = [];
+
+  for (const route of SITEMAP_ROUTES) {
+    const lastmod = resolveRouteLastmod(route, buildDate);
+    const alternates = buildHreflangAlternates(route.path);
+
+    for (const locale of SEO_LOCALES) {
+      entries.push({
+        appPath: route.path,
+        locale: locale.code,
+        loc: buildLocalizedCanonicalUrl(locale.code, route.path),
+        lastmod,
+        alternates,
+      });
+    }
+  }
+
+  return entries;
 }
 
-export function renderSitemapXml(entries: ReturnType<typeof buildSitemapEntries>) {
+export function renderSitemapXml(entries: SitemapEntry[]) {
   const body = entries
     .map(entry => {
       const lines = [
@@ -109,12 +126,18 @@ export function renderSitemapXml(entries: ReturnType<typeof buildSitemapEntries>
         `    <lastmod>${entry.lastmod}</lastmod>`,
       ];
 
+      entry.alternates.forEach(alternate => {
+        lines.push(
+          `    <xhtml:link rel="alternate" hreflang="${escapeXml(alternate.hreflang)}" href="${escapeXml(alternate.href)}" />`,
+        );
+      });
+
       lines.push(`  </url>`);
       return lines.join('\n');
     })
     .join('\n\n');
 
-  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${body}\n</urlset>\n`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${body}\n</urlset>\n`;
 }
 
 export function parseSitemapLocs(xml: string) {

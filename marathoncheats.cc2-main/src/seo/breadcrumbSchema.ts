@@ -1,4 +1,6 @@
-import { SITE_NAME, SITE_URL } from './config';
+import { SITE_NAME } from './config';
+import { buildLocalizedCanonicalUrl } from './localePaths';
+import { DEFAULT_SEO_LOCALE, type SeoLocaleCode } from './locales';
 
 export type BreadcrumbItem = {
   name: string;
@@ -20,15 +22,21 @@ export const AIMBOT_BREADCRUMB: readonly BreadcrumbItem[] = [
 ] as const;
 
 /** SEO: absolute URL for each breadcrumb step (hash anchors included). */
-export function buildBreadcrumbUrl(path: string) {
-  if (path === '/') return SITE_URL;
-  return `${SITE_URL}${path}`;
+export function buildBreadcrumbUrl(path: string, locale: SeoLocaleCode = DEFAULT_SEO_LOCALE) {
+  if (path === '/') return buildLocalizedCanonicalUrl(locale, '/');
+  if (path.startsWith('/#')) {
+    return `${buildLocalizedCanonicalUrl(locale, '/')}${path.slice(1)}`;
+  }
+  return buildLocalizedCanonicalUrl(locale, path);
 }
 
 /**
  * JSON-LD BreadcrumbList — invisible to users, helps search engines understand site hierarchy.
  */
-export function buildBreadcrumbJsonLd(items: readonly BreadcrumbItem[]) {
+export function buildBreadcrumbJsonLd(
+  items: readonly BreadcrumbItem[],
+  locale: SeoLocaleCode = DEFAULT_SEO_LOCALE,
+) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -36,7 +44,7 @@ export function buildBreadcrumbJsonLd(items: readonly BreadcrumbItem[]) {
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: buildBreadcrumbUrl(item.path),
+      item: buildBreadcrumbUrl(item.path, locale),
     })),
   };
 }

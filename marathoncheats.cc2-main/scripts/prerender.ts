@@ -1,32 +1,33 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { getSiteVideo } from '../src/content/videos';
-import { HOME_FAQS, STORE_FAQS } from '../src/content/faqs';
+import { STORE_FAQS } from '../src/content/faqs';
 import { BLOG_POSTS } from '../src/content/blogPosts';
 import { buildFaqPageSchema } from '../src/seo/faqSchema';
 import {
-  BLOG_POST_SEO,
   buildBlogPostTitle,
-  buildCanonicalUrl,
+  buildLocalizedCanonicalUrl,
   DEFAULT_OG_IMAGE,
   HOME_SEO,
-  ROUTE_SEO,
+  ROUTE_PATHS,
+  getRouteSeo,
+  getBlogPostSeo,
   SITE_URL,
 } from '../src/seo/config';
 import { IMAGE_SEO_REGISTRY } from '../src/content/imageSeo';
 import { buildBreadcrumbJsonLd, AIMBOT_BREADCRUMB } from '../src/seo/breadcrumbSchema';
 import { buildHomepageImageSchemas, buildImageGallerySchema } from '../src/seo/imageSchema';
-import {
-  BLOG_LIST_HEADING,
-  HOME_PAGE_HEADING,
-  STORE_PAGE_HEADING,
-  getLegalHeading,
-} from '../src/seo/pageHeadings';
+import { getHomePageHeading } from '../src/seo/localized/pageHeadings';
+import { getLocalizedHomeFaqs } from '../src/seo/localized/faqs';
+import { SEO_LOCALES, type SeoLocaleCode } from '../src/seo/locales';
+import { buildLocalizedPath, parseLocalePath } from '../src/seo/localePaths';
 import { buildVideoObjectJsonLd } from '../src/seo/videoSchema';
 import { buildSoftwareApplicationSchema } from '../src/seo/softwareApplicationSchema';
+import { getLegalHeading } from '../src/seo/pageHeadings';
 
 type PrerenderRoute = {
   path: string;
+  locale: SeoLocaleCode;
   title: string;
   description: string;
   heading?: string;
@@ -67,36 +68,39 @@ function toIsoDate(date: string) {
   return Number.isNaN(parsed.getTime()) ? new Date().toISOString().slice(0, 10) : parsed.toISOString().slice(0, 10);
 }
 
-function buildRoutes(): PrerenderRoute[] {
+function buildRoutesForLocale(locale: SeoLocaleCode): PrerenderRoute[] {
   const heroVideo = getSiteVideo('marathon-hero-demo');
   const featureVideo = getSiteVideo('marathon-feature-demo');
+  const homeHeading = getHomePageHeading(locale);
 
   const storeStructuredData = [
     buildSoftwareApplicationSchema({
-      url: `${SITE_URL}${ROUTE_SEO.store.path}`,
-      description: ROUTE_SEO.store.description,
+      url: buildLocalizedCanonicalUrl(locale, ROUTE_PATHS.store),
+      description: getRouteSeo('store', locale).description,
     }),
     buildFaqPageSchema(STORE_FAQS),
-    buildBreadcrumbJsonLd([
-      { name: 'Home', path: '/' },
-      { name: 'Buy Marathon Cheats', path: ROUTE_SEO.store.path },
-    ]),
+    buildBreadcrumbJsonLd(
+      [
+        { name: 'Home', path: '/' },
+        { name: 'Buy Marathon Cheats', path: ROUTE_PATHS.store },
+      ],
+      locale,
+    ),
     ...(featureVideo ? [buildVideoObjectJsonLd(featureVideo)] : []),
   ];
 
   const blogImages = IMAGE_SEO_REGISTRY.filter(entry => entry.pagePath.startsWith('/blog'));
-  const blogGallery = buildImageGallerySchema(ROUTE_SEO.blog.path, blogImages);
+  const blogGallery = buildImageGallerySchema(ROUTE_PATHS.blog, blogImages);
 
-  const legalRoutes: PrerenderRoute[] = [
-    ROUTE_SEO.terms,
-    ROUTE_SEO.privacy,
-    ROUTE_SEO.refund,
-  ].map(route => {
-    const heading = getLegalHeading(route.path)!;
+  const legalRoutes: PrerenderRoute[] = [ROUTE_PATHS.terms, ROUTE_PATHS.privacy, ROUTE_PATHS.refund].map(path => {
+    const routeKey = path === ROUTE_PATHS.terms ? 'terms' : path === ROUTE_PATHS.privacy ? 'privacy' : 'refund';
+    const meta = getRouteSeo(routeKey, locale);
+    const heading = getLegalHeading(path)!;
     return {
-      path: route.path,
-      title: route.title,
-      description: route.description,
+      path: buildLocalizedPath(locale, path),
+      locale,
+      title: meta.title,
+      description: meta.description,
       heading: heading.h1,
       intro: heading.intro,
     };
@@ -104,55 +108,61 @@ function buildRoutes(): PrerenderRoute[] {
 
   const routes: PrerenderRoute[] = [
     {
-      path: '/',
-      title: HOME_SEO.en.title,
-      description: HOME_SEO.en.description,
-      heading: HOME_PAGE_HEADING.h1,
-      intro: HOME_PAGE_HEADING.intro,
+      path: buildLocalizedPath(locale, '/'),
+      locale,
+      title: HOME_SEO[locale].title,
+      description: HOME_SEO[locale].description,
+      heading: homeHeading.h1,
+      intro: homeHeading.intro,
       includeHomeJsonLd: true,
       structuredData: [
-        buildFaqPageSchema(HOME_FAQS),
-        buildBreadcrumbJsonLd(AIMBOT_BREADCRUMB),
+        buildFaqPageSchema(getLocalizedHomeFaqs(locale)),
+        buildBreadcrumbJsonLd(AIMBOT_BREADCRUMB, locale),
         ...buildHomepageImageSchemas(),
         ...(heroVideo ? [buildVideoObjectJsonLd(heroVideo)] : []),
       ],
     },
     {
-      path: ROUTE_SEO.store.path,
-      title: ROUTE_SEO.store.title,
-      description: ROUTE_SEO.store.description,
-      heading: STORE_PAGE_HEADING.h1,
-      intro: STORE_PAGE_HEADING.intro,
+      path: buildLocalizedPath(locale, ROUTE_PATHS.store),
+      locale,
+      title: getRouteSeo('store', locale).title,
+      description: getRouteSeo('store', locale).description,
+      heading: 'Marathon Cheat pricing & features',
+      intro: getRouteSeo('store', locale).description,
       structuredData: storeStructuredData,
     },
     {
-      path: ROUTE_SEO.blog.path,
-      title: ROUTE_SEO.blog.title,
-      description: ROUTE_SEO.blog.description,
-      heading: BLOG_LIST_HEADING.h1,
-      intro: BLOG_LIST_HEADING.intro,
+      path: buildLocalizedPath(locale, ROUTE_PATHS.blog),
+      locale,
+      title: getRouteSeo('blog', locale).title,
+      description: getRouteSeo('blog', locale).description,
+      heading: 'Marathon Cheat Guides',
+      intro: getRouteSeo('blog', locale).description,
       structuredData: [
         {
           '@context': 'https://schema.org',
           '@type': 'Blog',
           name: 'Marathon Cheat Guides',
-          description: ROUTE_SEO.blog.description,
-          url: `${SITE_URL}${ROUTE_SEO.blog.path}`,
+          description: getRouteSeo('blog', locale).description,
+          url: buildLocalizedCanonicalUrl(locale, ROUTE_PATHS.blog),
+          inLanguage: locale,
         },
         ...(blogGallery ? [blogGallery] : []),
       ],
     },
     ...legalRoutes,
     ...BLOG_POSTS.map(post => {
-      const path = `/blog/${post.slug}`;
-      const canonicalUrl = `${SITE_URL}${path}`;
+      const appPath = `/blog/${post.slug}`;
+      const path = buildLocalizedPath(locale, appPath);
+      const canonicalUrl = buildLocalizedCanonicalUrl(locale, appPath);
       const publishedTime = toIsoDate(post.date);
-      const postSeo = BLOG_POST_SEO[post.slug];
-      const title = buildBlogPostTitle(post.title);
+      const postSeo = getBlogPostSeo(post.slug, locale);
+      const title = postSeo?.title ?? buildBlogPostTitle(post.title, locale);
       const description = postSeo?.description ?? post.excerpt;
 
       return {
         path,
+        locale,
         title,
         description,
         heading: post.title,
@@ -168,6 +178,7 @@ function buildRoutes(): PrerenderRoute[] {
             image: `${SITE_URL}${post.image}`,
             datePublished: publishedTime,
             dateModified: publishedTime,
+            inLanguage: locale,
             mainEntityOfPage: {
               '@type': 'WebPage',
               '@id': canonicalUrl,
@@ -186,11 +197,14 @@ function buildRoutes(): PrerenderRoute[] {
               },
             },
           },
-          buildBreadcrumbJsonLd([
-            { name: 'Home', path: '/' },
-            { name: 'Blog', path: ROUTE_SEO.blog.path },
-            { name: post.title, path },
-          ]),
+          buildBreadcrumbJsonLd(
+            [
+              { name: 'Home', path: '/' },
+              { name: 'Blog', path: ROUTE_PATHS.blog },
+              { name: post.title, path: appPath },
+            ],
+            locale,
+          ),
         ],
       };
     }),
@@ -199,8 +213,13 @@ function buildRoutes(): PrerenderRoute[] {
   return routes;
 }
 
+function buildRoutes(): PrerenderRoute[] {
+  return SEO_LOCALES.flatMap(locale => buildRoutesForLocale(locale.code));
+}
+
 function applyRouteSeo(template: string, route: PrerenderRoute) {
-  const canonical = buildCanonicalUrl(route.path);
+  const { locale, path: appPath } = parseLocalePath(route.path);
+  const canonical = buildLocalizedCanonicalUrl(locale, appPath);
   const image = route.image ? `${SITE_URL}${route.image}` : DEFAULT_OG_IMAGE;
   const robots = route.noindex ? 'noindex, follow' : 'index, follow';
   const type = route.type ?? 'website';
@@ -260,7 +279,7 @@ function writeRouteHtml(distDir: string, route: PrerenderRoute, template: string
   const outputPath =
     route.path === '/'
       ? join(distDir, 'index.html')
-      : join(distDir, route.path.slice(1), 'index.html');
+      : join(distDir, route.path.replace(/^\//, ''), 'index.html');
 
   mkdirSync(dirname(outputPath), { recursive: true });
   writeFileSync(outputPath, html);

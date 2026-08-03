@@ -7,8 +7,11 @@ import {
   OG_IMAGE_WIDTH,
   SITE_NAME,
   SITE_URL,
-  buildCanonicalUrl,
+  buildLocalizedCanonicalUrl,
+  buildHreflangAlternates,
+  parseLocalePath,
   toOgLocale,
+  type SeoLocaleCode,
 } from '../seo/config';
 
 export { SITE_URL, DEFAULT_OG_IMAGE };
@@ -16,7 +19,9 @@ export { SITE_URL, DEFAULT_OG_IMAGE };
 type SeoProps = {
   title: string;
   description: string;
+  /** App path without locale prefix, e.g. `/`, `/blog` */
   path: string;
+  locale?: SeoLocaleCode;
   image?: string;
   imageAlt?: string;
   type?: 'website' | 'article';
@@ -74,6 +79,7 @@ export function Seo({
   title,
   description,
   path,
+  locale,
   image = DEFAULT_OG_IMAGE,
   imageAlt = OG_IMAGE_ALT,
   type = 'website',
@@ -84,7 +90,9 @@ export function Seo({
   modifiedTime,
   structuredData,
 }: SeoProps) {
-  const canonicalUrl = buildCanonicalUrl(path);
+  const resolvedLocale = locale ?? parseLocalePath(path).locale;
+  const appPath = path;
+  const canonicalUrl = buildLocalizedCanonicalUrl(resolvedLocale, appPath);
   const imageUrl = absoluteUrl(image);
   const imageDimensions = image !== DEFAULT_OG_IMAGE ? getImageDimensions(image) : undefined;
   const ogImageWidth = imageDimensions?.width ?? OG_IMAGE_WIDTH;
@@ -115,7 +123,7 @@ export function Seo({
     upsertMeta('meta[property="og:image:height"]', { property: 'og:image:height', content: String(ogImageHeight) });
     upsertMeta('meta[property="og:image:alt"]', { property: 'og:image:alt', content: imageAlt });
     upsertMeta('meta[property="og:site_name"]', { property: 'og:site_name', content: SITE_NAME });
-    upsertMeta('meta[property="og:locale"]', { property: 'og:locale', content: toOgLocale(lang) });
+    upsertMeta('meta[property="og:locale"]', { property: 'og:locale', content: toOgLocale(resolvedLocale) });
 
     upsertMeta('meta[name="twitter:card"]', { name: 'twitter:card', content: 'summary_large_image' });
     upsertMeta('meta[name="twitter:title"]', { name: 'twitter:title', content: title });
@@ -138,6 +146,14 @@ export function Seo({
     }
 
     document.querySelectorAll('link[data-dynamic-hreflang="true"]').forEach(el => el.remove());
+    buildHreflangAlternates(appPath).forEach(alternate => {
+      const link = document.createElement('link');
+      link.rel = 'alternate';
+      link.hreflang = alternate.hreflang;
+      link.href = alternate.href;
+      link.dataset.dynamicHreflang = 'true';
+      document.head.appendChild(link);
+    });
 
     setStaticHomeJsonLdVisible(includeHomeJsonLd);
 
@@ -151,6 +167,7 @@ export function Seo({
       document.head.appendChild(jsonLd);
     });
   }, [
+    appPath,
     canonicalUrl,
     description,
     imageAlt,
@@ -162,6 +179,7 @@ export function Seo({
     ogImageWidth,
     path,
     publishedTime,
+    resolvedLocale,
     robots,
     structuredData,
     title,

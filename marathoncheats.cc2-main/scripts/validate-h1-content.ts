@@ -9,6 +9,8 @@ import {
   getMissingH1Words,
 } from '../src/seo/pageHeadings';
 import { ROUTE_SEO } from '../src/seo/config';
+import { SEO_LOCALES } from '../src/seo/locales';
+import { buildLocalizedPath } from '../src/seo/localePaths';
 
 type HeadingCase = {
   name: string;
@@ -17,8 +19,14 @@ type HeadingCase = {
 };
 
 const distDir = join(process.cwd(), 'dist');
+const localeSegments = new Set(SEO_LOCALES.map(locale => locale.segment));
 
-function collectHtmlFiles(dir: string, files: string[] = []): string[] {
+function distPathFor(appPath: string) {
+  const localized = buildLocalizedPath('en', appPath);
+  return join(distDir, localized.replace(/^\//, ''), 'index.html');
+}
+
+function collectHtmlFiles(dir: string, relativeDir = '', files: string[] = []): string[] {
   if (!existsSync(dir)) {
     return files;
   }
@@ -27,11 +35,15 @@ function collectHtmlFiles(dir: string, files: string[] = []): string[] {
     const fullPath = join(dir, entry);
     const stats = statSync(fullPath);
     if (stats.isDirectory()) {
-      collectHtmlFiles(fullPath, files);
+      const nextRelative = relativeDir ? `${relativeDir}/${entry}` : entry;
+      collectHtmlFiles(fullPath, nextRelative, files);
       continue;
     }
     if (entry === 'index.html') {
-      files.push(fullPath);
+      const firstSegment = relativeDir.split('/').filter(Boolean)[0];
+      if (firstSegment && localeSegments.has(firstSegment)) {
+        files.push(fullPath);
+      }
     }
   }
   return files;
@@ -51,32 +63,16 @@ function extractTagContent(html: string, tag: string) {
   return decodeHtmlEntities(raw);
 }
 
-const headingCases: HeadingCase[] = [
-  { name: 'home', file: join(distDir, 'index.html'), h1: HOME_PAGE_HEADING.h1 },
-  {
-    name: 'store',
-    file: join(distDir, 'marathoncheats-buy', 'index.html'),
-    h1: STORE_PAGE_HEADING.h1,
-  },
-  { name: 'blog', file: join(distDir, 'blog', 'index.html'), h1: BLOG_LIST_HEADING.h1 },
-  {
-    name: 'terms',
-    file: join(distDir, 'terms', 'index.html'),
-    h1: LEGAL_PAGE_HEADINGS.terms.h1,
-  },
-  {
-    name: 'privacy',
-    file: join(distDir, 'privacy', 'index.html'),
-    h1: LEGAL_PAGE_HEADINGS.privacy.h1,
-  },
-  {
-    name: 'refund',
-    file: join(distDir, 'refund', 'index.html'),
-    h1: LEGAL_PAGE_HEADINGS.refund.h1,
-  },
+const englishHeadingCases: HeadingCase[] = [
+  { name: 'home', file: distPathFor('/'), h1: HOME_PAGE_HEADING.h1 },
+  { name: 'store', file: distPathFor('/marathoncheats-buy'), h1: STORE_PAGE_HEADING.h1 },
+  { name: 'blog', file: distPathFor('/blog'), h1: BLOG_LIST_HEADING.h1 },
+  { name: 'terms', file: distPathFor('/terms'), h1: LEGAL_PAGE_HEADINGS.terms.h1 },
+  { name: 'privacy', file: distPathFor('/privacy'), h1: LEGAL_PAGE_HEADINGS.privacy.h1 },
+  { name: 'refund', file: distPathFor('/refund'), h1: LEGAL_PAGE_HEADINGS.refund.h1 },
   ...BLOG_POSTS.map(post => ({
     name: `blog/${post.slug}`,
-    file: join(distDir, 'blog', post.slug, 'index.html'),
+    file: distPathFor(`/blog/${post.slug}`),
     h1: post.title,
   })),
 ];
@@ -88,7 +84,7 @@ if (!existsSync(distDir)) {
   process.exit(1);
 }
 
-headingCases.forEach(testCase => {
+englishHeadingCases.forEach(testCase => {
   if (!existsSync(testCase.file)) {
     errors.push(`${testCase.name}: prerendered HTML not found at ${testCase.file}`);
     return;
@@ -114,8 +110,10 @@ headingCases.forEach(testCase => {
 });
 
 const prerenderedCount = collectHtmlFiles(distDir).length;
-if (prerenderedCount !== headingCases.length) {
-  errors.push(`Expected ${headingCases.length} prerendered pages, found ${prerenderedCount}.`);
+const routesPerLocale = englishHeadingCases.length;
+const expectedCount = routesPerLocale * SEO_LOCALES.length;
+if (prerenderedCount !== expectedCount) {
+  errors.push(`Expected ${expectedCount} prerendered pages, found ${prerenderedCount}.`);
 }
 
 if (!ROUTE_SEO.store.path.startsWith('/')) {
@@ -128,4 +126,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`H1 content validation passed for ${headingCases.length} prerendered pages.`);
+console.log(`H1 content validation passed for ${englishHeadingCases.length} English prerendered pages (${prerenderedCount} total locale pages).`);

@@ -1,37 +1,44 @@
 import { Link } from 'react-router-dom';
 import { ZADEYO_SUPPORT_URL } from '../content/support';
 import { SiteLogo } from './SiteLogo';
-
-const EXPLORE_LINKS: Array<
-  | { label: string; to: '/' | `/blog/${string}` | '/blog' | '/marathoncheats-buy' }
-  | { label: string; href: string; external: true }
-> = [
-  { label: 'Marathon Cheats overview', to: '/' },
-  { label: 'Marathon cheat pricing', to: '/marathoncheats-buy' },
-  { label: 'Marathon ESP guide', to: '/blog/marathoncheats-esp' },
-  { label: 'Marathon aimbot guide', to: '/blog/marathoncheats-aimbot' },
-  { label: 'Marathon anti-cheat & HWID', to: '/blog/marathoncheats-hwid' },
-  { label: 'All cheat guides', to: '/blog' },
-];
-
-const HELP_LINKS: Array<
-  | { label: string; to: '/terms' | '/privacy' | '/refund' }
-  | { label: string; href: string; external?: boolean }
-> = [
-  { label: 'Marathon cheat FAQ', href: '/marathoncheats-buy#faq' },
-  { label: 'Support', href: ZADEYO_SUPPORT_URL, external: true },
-  { label: 'Terms of service', to: '/terms' },
-  { label: 'Privacy policy', to: '/privacy' },
-  { label: 'Refund policy', to: '/refund' },
-];
+import { useLocalizedPath } from '../seo/useSeoLocale';
 
 export function Footer() {
+  const homePath = useLocalizedPath('/');
+  const storePath = useLocalizedPath('/marathoncheats-buy');
+  const blogPath = useLocalizedPath('/blog');
+  const espGuidePath = useLocalizedPath('/blog/marathoncheats-esp');
+  const aimbotGuidePath = useLocalizedPath('/blog/marathoncheats-aimbot');
+  const hwidGuidePath = useLocalizedPath('/blog/marathoncheats-hwid');
+  const termsPath = useLocalizedPath('/terms');
+  const privacyPath = useLocalizedPath('/privacy');
+  const refundPath = useLocalizedPath('/refund');
+
+  const EXPLORE_LINKS = [
+    { label: 'Marathon Cheats overview', to: homePath },
+    { label: 'Marathon cheat pricing', to: storePath },
+    { label: 'Marathon ESP guide', to: espGuidePath },
+    { label: 'Marathon aimbot guide', to: aimbotGuidePath },
+    { label: 'Marathon anti-cheat & HWID', to: hwidGuidePath },
+    { label: 'All cheat guides', to: blogPath },
+  ] as const;
+
+  const HELP_LINKS: Array<
+    | { label: string; to: string }
+    | { label: string; href: string; external?: boolean }
+  > = [
+    { label: 'Marathon cheat FAQ', href: `${storePath}#faq` },
+    { label: 'Support', href: ZADEYO_SUPPORT_URL, external: true },
+    { label: 'Terms of service', to: termsPath },
+    { label: 'Privacy policy', to: privacyPath },
+    { label: 'Refund policy', to: refundPath },
+  ] as const;
   return (
     <footer className="site-footer">
       <div className="site-footer__inner">
         <div className="site-footer__grid">
           <div className="site-footer__brand">
-            <Link to="/" className="site-footer__logo-link" aria-label="Marathon Cheats home">
+            <Link to={homePath} className="site-footer__logo-link" aria-label="Marathon Cheats home">
               <SiteLogo height={30} className="site-logo--footer" />
             </Link>
             <p className="site-footer__brand-desc">
@@ -49,23 +56,11 @@ export function Footer() {
 
           <div>
             <p className="site-footer__col-title">Explore</p>
-            {EXPLORE_LINKS.map(link =>
-              'to' in link ? (
+            {EXPLORE_LINKS.map(link => (
                 <Link key={link.label} to={link.to} className="site-footer__link">
                   {link.label}
                 </Link>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="site-footer__link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {link.label}
-                </a>
-              ),
-            )}
+              ))}
           </div>
 
           <div>
@@ -80,7 +75,7 @@ export function Footer() {
                   key={link.label}
                   href={link.href}
                   className="site-footer__link"
-                  {...(link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 >
                   {link.label}
                 </a>

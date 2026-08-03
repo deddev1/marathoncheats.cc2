@@ -1,5 +1,8 @@
 import { useState, useEffect, type ReactNode } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { I18nContext } from './i18n/context';
+import { parseLocalePath, buildLocalizedPath } from './seo/localePaths';
+import { i18nToSeoLocale, seoLocaleToI18n } from './seo/locales';
 
 const translations: Record<string, Record<string, string>> = {
   en: {
@@ -213,7 +216,13 @@ const translations: Record<string, Record<string, string>> = {
 };
 
 export function I18nProvider({ children }: { children: ReactNode }) {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { locale: urlLocale, path: appPath } = parseLocalePath(location.pathname);
+
   const [lang, setLangState] = useState(() => {
+    const fromUrl = seoLocaleToI18n(urlLocale);
+    if (translations[fromUrl]) return fromUrl;
     const stored = localStorage.getItem('lang');
     if (stored && translations[stored]) return stored;
     const browserLang = navigator.language.split('-')[0];
@@ -221,11 +230,27 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     return 'en';
   });
 
+  useEffect(() => {
+    const fromUrl = seoLocaleToI18n(urlLocale);
+    if (fromUrl && translations[fromUrl] && fromUrl !== lang) {
+      setLangState(fromUrl);
+      localStorage.setItem('lang', fromUrl);
+    }
+  }, [urlLocale, lang]);
+
   const setLang = (newLang: string) => {
     setLangState(newLang);
     localStorage.setItem('lang', newLang);
     document.documentElement.lang = newLang;
     document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
+
+    const seoLocale = i18nToSeoLocale(newLang);
+    if (seoLocale) {
+      const target = buildLocalizedPath(seoLocale, appPath);
+      if (target !== location.pathname && target.replace(/\/$/, '') !== location.pathname.replace(/\/$/, '')) {
+        navigate(target);
+      }
+    }
   };
 
   useEffect(() => {

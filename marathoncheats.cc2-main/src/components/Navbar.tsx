@@ -7,6 +7,8 @@ import { scrollToSectionById } from '../utils/scrollToSection';
 import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
 import { SiteLogo } from './SiteLogo';
 import { LanguageFlag } from './LanguageFlag';
+import { parseLocalePath } from '../seo/localePaths';
+import { useSeoLocale } from '../seo/useSeoLocale';
 
 const MOBILE_MQ = '(max-width: 1024px)';
 const BUY_URL = ZADEYO_CHECKOUT_URL;
@@ -39,15 +41,17 @@ const NAV_LINKS: NavLink[] = [
   { label: 'Blog', to: '/blog' },
 ];
 
-function getSectionHref(sectionId: NavSectionId, isHome: boolean) {
-  if (sectionId === 'top') return '/';
-  return isHome ? `#${sectionId}` : `/#${sectionId}`;
+function getSectionHref(sectionId: NavSectionId, isHome: boolean, homePath: string) {
+  if (sectionId === 'top') return homePath;
+  return isHome ? `#${sectionId}` : `${homePath}#${sectionId}`;
 }
 
 export function Navbar() {
   const location = useLocation();
   const { lang, setLang } = useI18n();
-  const isHome = location.pathname === '/';
+  const { localizedPath } = useSeoLocale();
+  const { path: appPath } = parseLocalePath(location.pathname);
+  const isHome = appPath === '/';
   const activeSection = useScrollSpy(isHome);
 
   const [scrolled, setScrolled] = useState(false);
@@ -66,6 +70,7 @@ export function Navbar() {
   const currentLang = LANGUAGES.find(language => language.code === lang) ?? LANGUAGES[0];
 
   const closeMobileMenu = useCallback(() => setMenuOpen(false), []);
+  const homePath = localizedPath('/');
 
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_MQ);
@@ -120,7 +125,7 @@ export function Navbar() {
 
       if (sectionId === 'top') {
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        window.history.pushState(null, '', '/');
+        window.history.pushState(null, '', homePath);
         return;
       }
 
@@ -128,12 +133,13 @@ export function Navbar() {
 
       window.history.pushState(null, '', `#${sectionId}`);
     },
-    [closeMobileMenu, isHome],
+    [closeMobileMenu, isHome, homePath],
   );
 
   const isLinkActive = (item: NavLink) => {
     if ('to' in item) {
-      return location.pathname === item.to || location.pathname.startsWith(`${item.to}/`);
+      const href = localizedPath(item.to);
+      return location.pathname === href || location.pathname.startsWith(`${href}/`);
     }
 
     return isHome && activeSection === item.sectionId;
@@ -143,10 +149,11 @@ export function Navbar() {
     const active = isLinkActive(item);
 
     if ('to' in item) {
+      const href = localizedPath(item.to);
       return (
         <a
           key={item.label}
-          href={item.to}
+          href={href}
           className={className}
           aria-current={active ? 'page' : undefined}
           onClick={closeMobileMenu}
@@ -159,7 +166,7 @@ export function Navbar() {
     return (
       <a
         key={item.label}
-        href={getSectionHref(item.sectionId, isHome)}
+        href={getSectionHref(item.sectionId, isHome, homePath)}
         className={className}
         aria-current={active ? 'page' : undefined}
         onClick={event => handleSectionClick(event, item.sectionId)}
@@ -174,7 +181,7 @@ export function Navbar() {
       <header className="site-header" data-scrolled={scrolled ? 'true' : 'false'}>
         <nav className="site-nav" aria-label="Main navigation">
           <a
-            href="/"
+            href={homePath}
             className="site-nav__brand"
             aria-label="Marathon Cheats home"
             onClick={event => handleSectionClick(event, 'top')}

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
-import { buildCanonicalUrl } from '../src/seo/config';
+import { buildLocalizedCanonicalUrl } from '../src/seo/config';
 import { SITEMAP_ROUTES } from '../src/seo/sitemapRoutes';
+import { SEO_LOCALES } from '../src/seo/locales';
 import {
   ROBOTS_PATH,
   SITEMAP_URL,
@@ -31,12 +32,17 @@ if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
   fail('sitemap.xml must start with an XML declaration and UTF-8 encoding.');
 }
 
-if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
+if (!xml.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"')) {
   fail('sitemap.xml must use the standard sitemaps.org urlset namespace.');
 }
 
-if (actualLocs.length !== expectedLocs.length) {
-  fail(`sitemap.xml has ${actualLocs.length} URLs, expected ${expectedLocs.length}.`);
+if (!xml.includes('xmlns:xhtml="http://www.w3.org/1999/xhtml"')) {
+  fail('sitemap.xml must declare the xhtml namespace for hreflang alternates.');
+}
+
+const expectedCount = SITEMAP_ROUTES.length * SEO_LOCALES.length;
+if (actualLocs.length !== expectedCount) {
+  fail(`sitemap.xml has ${actualLocs.length} URLs, expected ${expectedCount}.`);
 }
 
 if (actualLastmods.length !== actualLocs.length) {
@@ -65,10 +71,6 @@ actualLocs.forEach(loc => {
 
   if (loc.includes('?')) {
     fail(`sitemap.xml must not include query-string URLs: ${loc}`);
-  }
-
-  if (loc !== buildCanonicalUrl(new URL(loc).pathname)) {
-    fail(`sitemap.xml URL does not match canonical format: ${loc}`);
   }
 });
 
@@ -99,15 +101,17 @@ expectedEntries.forEach(entry => {
 });
 
 SITEMAP_ROUTES.forEach(route => {
-  const canonical = buildCanonicalUrl(route.path);
+  SEO_LOCALES.forEach(locale => {
+    const canonical = buildLocalizedCanonicalUrl(locale.code, route.path);
 
-  if (route.path === '/') {
-    if (!canonical.endsWith('/')) {
-      fail('Homepage canonical must keep a trailing slash.');
+    if (route.path === '/') {
+      if (!canonical.endsWith('/')) {
+        fail(`Homepage canonical must keep a trailing slash: ${canonical}`);
+      }
+    } else if (canonical.endsWith('/')) {
+      fail(`Non-homepage canonical must not end with a trailing slash: ${canonical}`);
     }
-  } else if (canonical.endsWith('/')) {
-    fail(`Non-homepage canonical must not end with a trailing slash: ${canonical}`);
-  }
+  });
 });
 
 const robots = readFileSync(ROBOTS_PATH, 'utf8');
