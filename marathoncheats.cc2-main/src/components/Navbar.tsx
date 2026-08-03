@@ -5,13 +5,11 @@ import { useI18n } from '../i18n/useI18n';
 import { useScrollSpy, type NavSectionId } from '../hooks/useScrollSpy';
 import { scrollToSectionById } from '../utils/scrollToSection';
 import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
-import { ZADEYO_SUPPORT_URL } from '../content/support';
 import { SiteLogo } from './SiteLogo';
 import { LanguageFlag } from './LanguageFlag';
 
 const MOBILE_MQ = '(max-width: 1024px)';
 const BUY_URL = ZADEYO_CHECKOUT_URL;
-const SUPPORT_URL = ZADEYO_SUPPORT_URL;
 
 type NavLink = {
   label: string;
@@ -162,12 +160,11 @@ export function Navbar() {
                   type="button"
                   className="site-nav__lang-trigger"
                   onClick={() => setLangOpen(open => !open)}
-                  aria-label="Select language"
+                  aria-label={`Select language (${currentLang.label})`}
                   aria-expanded={langOpen}
                   aria-haspopup="listbox"
                 >
                   <LanguageFlag emoji={currentLang.flag} className="site-nav__lang-flag" />
-                  <span>{currentLang.label}</span>
                 </button>
 
                 {langOpen && (
@@ -178,28 +175,20 @@ export function Navbar() {
                         type="button"
                         className="site-nav__lang-item"
                         data-active={lang === language.code ? 'true' : 'false'}
+                        aria-label={language.label}
+                        aria-selected={lang === language.code}
                         onClick={() => {
                           setLang(language.code);
                           setLangOpen(false);
                         }}
                       >
                         <LanguageFlag emoji={language.flag} className="site-nav__lang-flag" />
-                        <span>{language.label}</span>
                       </button>
                     ))}
                   </div>
                 )}
               </div>
             </div>
-
-            <a
-              href={SUPPORT_URL}
-              className="site-nav__buy btn-buy"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Support
-            </a>
 
             <a href={BUY_URL} className="site-nav__buy btn-buy" target="_blank" rel="noopener noreferrer">
               Buy Now
@@ -258,34 +247,22 @@ export function Navbar() {
         </ul>
 
         <div className="mobile-nav-panel__footer">
-          <label className="mobile-nav-panel__lang-label" htmlFor="mobile-nav-lang">
-            Language
-          </label>
-          <div className="mobile-nav-panel__lang-row">
-            <LanguageFlag emoji={currentLang.flag} className="mobile-nav-panel__lang-flag" />
-            <select
-              id="mobile-nav-lang"
-              className="mobile-nav-panel__lang-select"
-              value={lang}
-              onChange={event => setLang(event.target.value as typeof lang)}
-            >
-              {LANGUAGES.map(language => (
-                <option key={language.code} value={language.code}>
-                  {`${language.flag} ${language.label}`}
-                </option>
-              ))}
-            </select>
+          <p className="mobile-nav-panel__lang-label">Language</p>
+          <div className="mobile-nav-panel__lang-flags" role="listbox" aria-label="Languages">
+            {LANGUAGES.map(language => (
+              <button
+                key={language.code}
+                type="button"
+                className="mobile-nav-panel__lang-flag-btn"
+                data-active={lang === language.code ? 'true' : 'false'}
+                aria-label={language.label}
+                aria-selected={lang === language.code}
+                onClick={() => setLang(language.code)}
+              >
+                <LanguageFlag emoji={language.flag} className="mobile-nav-panel__lang-flag" />
+              </button>
+            ))}
           </div>
-
-          <a
-            href={SUPPORT_URL}
-            className="mobile-nav-panel__buy btn-buy"
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={closeMobileMenu}
-          >
-            Support
-          </a>
 
           <a
             href={BUY_URL}
