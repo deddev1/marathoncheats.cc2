@@ -99,15 +99,19 @@ export function shouldSkipLocaleRedirect(pathname: string): boolean {
   return false;
 }
 
+/** Canonical SEO asset paths (no trailing slash). */
+export const SEO_ASSET_PATHS = new Set([
+  '/robots.txt',
+  '/sitemap.xml',
+  '/video-sitemap.xml',
+  '/image-sitemap.xml',
+]);
+
 /**
  * Redirect /en and /en/* to unprefixed English URLs (/ and /*).
  * Used by the Cloudflare worker and client router.
  */
 export function buildEnPrefixStripRedirect(pathname: string, search = ''): string | null {
-  if (shouldSkipLocaleRedirect(pathname)) {
-    return null;
-  }
-
   const normalized = pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
 
   if (normalized === '/en') {
@@ -121,6 +125,16 @@ export function buildEnPrefixStripRedirect(pathname: string, search = ''): strin
   }
 
   return null;
+}
+
+/** Redirect trailing-slash SEO assets to canonical paths, e.g. /sitemap.xml/ -> /sitemap.xml */
+export function buildSeoAssetTrailingSlashRedirect(pathname: string, search = ''): string | null {
+  if (!pathname.endsWith('/') || pathname === '/') return null;
+
+  const withoutSlash = pathname.replace(/\/$/, '') || '/';
+  if (!SEO_ASSET_PATHS.has(withoutSlash)) return null;
+
+  return new URL(`${withoutSlash}${search}`, SITE_URL).toString();
 }
 
 /** @deprecated Use buildEnPrefixStripRedirect */

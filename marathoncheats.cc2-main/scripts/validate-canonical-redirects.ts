@@ -92,6 +92,24 @@ const cases: RedirectCase[] = [
     expectRedirect: false,
   },
   {
+    name: '/en/sitemap.xml strips to /sitemap.xml',
+    url: `${CANONICAL_ORIGIN}/en/sitemap.xml`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/sitemap.xml`,
+  },
+  {
+    name: '/en/sitemap.xml/ strips to /sitemap.xml',
+    url: `${CANONICAL_ORIGIN}/en/sitemap.xml/`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/sitemap.xml`,
+  },
+  {
+    name: 'sitemap.xml trailing slash redirects to canonical',
+    url: `${CANONICAL_ORIGIN}/sitemap.xml/`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/sitemap.xml`,
+  },
+  {
     name: 'sitemap.xml is served at root without locale redirect',
     url: `${CANONICAL_ORIGIN}/sitemap.xml`,
     expectRedirect: false,
