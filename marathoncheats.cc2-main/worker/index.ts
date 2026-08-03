@@ -1,5 +1,5 @@
 import { SITE_VIDEOS, getVideoWatchPath } from '../src/content/videos';
-import { buildLegacyLocaleRedirect } from '../src/seo/localePaths';
+import { buildEnPrefixStripRedirect } from '../src/seo/localePaths';
 
 /** Must match `SITE_URL` in src/seo/config.ts */
 export const CANONICAL_ORIGIN = 'https://marathoncheats.cc';
@@ -83,7 +83,7 @@ export function buildRequestRedirect(request: Request): Response | null {
   const embedPath = VIDEO_WATCH_REDIRECTS[pathname];
 
   let destinationPath = embedPath ?? pathname;
-  const localeRedirect = buildLegacyLocaleRedirect(destinationPath);
+  const localeRedirect = buildEnPrefixStripRedirect(destinationPath);
   if (localeRedirect) {
     destinationPath = new URL(localeRedirect).pathname;
   }

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Navbar } from './components/Navbar';
 import { StickyBuyBar } from './components/StickyBuyBar';
 import { Footer } from './components/Footer';
@@ -28,8 +28,7 @@ import { buildSoftwareApplicationSchema } from './seo/softwareApplicationSchema'
 import { IMAGE_SEO_REGISTRY, getImageSeoOrFallback } from './content/imageSeo';
 import { parseLocalePath, buildLocalizedCanonicalUrl } from './seo/localePaths';
 import { getLocalizedHomeFaqs } from './seo/localized/faqs';
-import { LocaleLayout, RootRedirect } from './components/LocaleLayout';
-import { getSeoLocale } from './seo/locales';
+import { EnPrefixRedirect, LocaleLayout } from './components/LocaleLayout';
 import { seoLocaleToI18n } from './seo/locales';
 import './globals.css';
 
@@ -243,18 +242,6 @@ function RouteSeo() {
   );
 }
 
-function LegacyRedirect({ to }: { to: string }) {
-  const segment = getSeoLocale('en')!.segment;
-  return <Navigate to={`/${segment}${to === '/' ? '/' : to}`} replace />;
-}
-
-function LegacyBlogRedirect() {
-  const { pathname } = useLocation();
-  const slug = pathname.replace('/blog/', '');
-  const segment = getSeoLocale('en')!.segment;
-  return <Navigate to={`/${segment}/blog/${slug}`} replace />;
-}
-
 export default function App() {
   return (
     <BrowserRouter>
@@ -264,7 +251,18 @@ export default function App() {
         <StickyBuyBar />
         <main className="app-main">
           <Routes>
-            <Route path="/" element={<RootRedirect />} />
+            <Route path="/en" element={<EnPrefixRedirect />} />
+            <Route path="/en/*" element={<EnPrefixRedirect />} />
+
+            <Route path="/" element={<HomePage />} />
+            <Route path="/marathoncheats-buy" element={<StorePage />} />
+            <Route path="/blog" element={<BlogListPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/videos/:slug" element={<VideoPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/refund" element={<RefundPage />} />
+
             <Route path="/:locale" element={<LocaleLayout />}>
               <Route index element={<HomePage />} />
               <Route path="marathoncheats-buy" element={<StorePage />} />
@@ -276,12 +274,7 @@ export default function App() {
               <Route path="refund" element={<RefundPage />} />
               <Route path="*" element={<NotFoundPage />} />
             </Route>
-            <Route path="/marathoncheats-buy" element={<LegacyRedirect to="/marathoncheats-buy" />} />
-            <Route path="/blog" element={<LegacyRedirect to="/blog" />} />
-            <Route path="/blog/:slug" element={<LegacyBlogRedirect />} />
-            <Route path="/terms" element={<LegacyRedirect to="/terms" />} />
-            <Route path="/privacy" element={<LegacyRedirect to="/privacy" />} />
-            <Route path="/refund" element={<LegacyRedirect to="/refund" />} />
+
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </main>

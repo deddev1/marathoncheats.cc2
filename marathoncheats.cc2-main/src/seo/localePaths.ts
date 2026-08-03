@@ -5,7 +5,8 @@ import {
   type SeoLocaleCode,
   getSeoLocale,
   getSeoLocaleSegment,
-  isSeoLocaleSegment,
+  isPrefixedLocaleSegment,
+  localeUsesUrlPrefix,
 } from './locales';
 
 export type ParsedLocalePath = {
@@ -26,7 +27,7 @@ export function parseLocalePath(pathname: string): ParsedLocalePath {
   const raw = pathname === '/' ? '/' : pathname.replace(/\/+$/, '') || '/';
   const segments = raw.split('/').filter(Boolean);
 
-  if (segments.length > 0 && isSeoLocaleSegment(segments[0])) {
+  if (segments.length > 0 && isPrefixedLocaleSegment(segments[0])) {
     const locale = getSeoLocale(segments[0])!.code;
     const rest = segments.slice(1).join('/');
     return { locale, path: rest ? `/${rest}` : '/' };
@@ -35,10 +36,15 @@ export function parseLocalePath(pathname: string): ParsedLocalePath {
   return { locale: DEFAULT_SEO_LOCALE, path: normalizeAppPath(raw) };
 }
 
-/** Build a localized pathname, e.g. `/de/blog`. Home uses a trailing slash: `/en/`. */
+/** Build a localized pathname. English: `/`, `/blog`. Others: `/de/`, `/de/blog`. */
 export function buildLocalizedPath(locale: SeoLocaleCode, appPath: string): string {
-  const segment = getSeoLocaleSegment(locale);
   const normalized = normalizeAppPath(appPath);
+
+  if (!localeUsesUrlPrefix(locale)) {
+    return normalized;
+  }
+
+  const segment = getSeoLocaleSegment(locale);
   if (normalized === '/') return `/${segment}/`;
   return `/${segment}${normalized}`;
 }
@@ -68,7 +74,7 @@ export function buildHreflangAlternates(appPath: string): HreflangAlternate[] {
   return alternates;
 }
 
-/** Paths that must never receive a locale prefix redirect (SEO files, static assets). */
+/** Paths that must never be rewritten (SEO files, static assets). */
 export const LOCALE_REDIRECT_EXCLUDED_EXACT = new Set([
   '/robots.txt',
   '/sitemap.xml',
@@ -94,20 +100,30 @@ export function shouldSkipLocaleRedirect(pathname: string): boolean {
 }
 
 /**
- * Returns a canonical /en/... destination when the request path has no locale prefix.
- * Used by the Cloudflare worker for 301 redirects.
+ * Redirect /en and /en/* to unprefixed English URLs (/ and /*).
+ * Used by the Cloudflare worker and client router.
  */
-export function buildLegacyLocaleRedirect(pathname: string, search = ''): string | null {
+export function buildEnPrefixStripRedirect(pathname: string, search = ''): string | null {
   if (shouldSkipLocaleRedirect(pathname)) {
     return null;
   }
 
-  const firstSegment = pathname.split('/').filter(Boolean)[0]?.toLowerCase() ?? '';
+  const normalized = pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
 
-  if (firstSegment && isSeoLocaleSegment(firstSegment)) {
-    return null;
+  if (normalized === '/en') {
+    return new URL(`/${search}`, SITE_URL).toString();
   }
 
-  const appPath = normalizeAppPath(pathname);
-  return buildLocalizedCanonicalUrl(DEFAULT_SEO_LOCALE, appPath) + search;
+  if (normalized.startsWith('/en/')) {
+    const stripped = normalized.slice(3) || '/';
+    const destination = stripped.startsWith('/') ? stripped : `/${stripped}`;
+    return new URL(`${destination}${search}`, SITE_URL).toString();
+  }
+
+  return null;
+}
+
+/** @deprecated Use buildEnPrefixStripRedirect */
+export function buildLegacyLocaleRedirect(pathname: string, search = ''): string | null {
+  return buildEnPrefixStripRedirect(pathname, search);
 }
