@@ -11,6 +11,21 @@ import { LanguageFlag } from './LanguageFlag';
 const MOBILE_MQ = '(max-width: 1024px)';
 const BUY_URL = ZADEYO_CHECKOUT_URL;
 
+function LangChevron() {
+  return (
+    <svg
+      className="site-nav__lang-chevron"
+      width="12"
+      height="12"
+      viewBox="0 0 12 12"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path d="M2.5 4.5 6 8l3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 type NavLink =
   | { label: string; sectionId: NavSectionId }
   | { label: string; to: '/blog' };
@@ -184,7 +199,9 @@ export function Navbar() {
                   aria-expanded={langOpen}
                   aria-haspopup="listbox"
                 >
-                  <LanguageFlag emoji={currentLang.flag} className="site-nav__lang-flag" />
+                  <LanguageFlag countryCode={currentLang.countryCode} className="site-nav__lang-flag" />
+                  <span className="site-nav__lang-label">{currentLang.label}</span>
+                  <LangChevron />
                 </button>
 
                 {langOpen && (
@@ -202,7 +219,8 @@ export function Navbar() {
                           setLangOpen(false);
                         }}
                       >
-                        <LanguageFlag emoji={language.flag} className="site-nav__lang-flag" />
+                        <LanguageFlag countryCode={language.countryCode} className="site-nav__lang-flag" />
+                        <span className="site-nav__lang-item-label">{language.label}</span>
                       </button>
                     ))}
                   </div>
@@ -268,18 +286,19 @@ export function Navbar() {
 
         <div className="mobile-nav-panel__footer">
           <p className="mobile-nav-panel__lang-label">Language</p>
-          <div className="mobile-nav-panel__lang-flags" role="listbox" aria-label="Languages">
+          <div className="mobile-nav-panel__lang-menu" role="listbox" aria-label="Languages">
             {LANGUAGES.map(language => (
               <button
                 key={language.code}
                 type="button"
-                className="mobile-nav-panel__lang-flag-btn"
+                className="mobile-nav-panel__lang-item"
                 data-active={lang === language.code ? 'true' : 'false'}
                 aria-label={language.label}
                 aria-selected={lang === language.code}
                 onClick={() => setLang(language.code)}
               >
-                <LanguageFlag emoji={language.flag} className="mobile-nav-panel__lang-flag" />
+                <LanguageFlag countryCode={language.countryCode} className="mobile-nav-panel__lang-flag" />
+                <span className="mobile-nav-panel__lang-item-label">{language.label}</span>
               </button>
             ))}
           </div>
