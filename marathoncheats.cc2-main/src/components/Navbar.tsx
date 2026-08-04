@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type MouseEvent as ReactMouseEvent } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { LANGUAGES } from '../i18n/languages';
 import { useI18n } from '../i18n/useI18n';
 import { useScrollSpy, type NavSectionId } from '../hooks/useScrollSpy';
@@ -151,15 +151,15 @@ export function Navbar() {
     if ('to' in item) {
       const href = localizedPath(item.to);
       return (
-        <a
+        <Link
           key={item.label}
-          href={href}
+          to={href}
           className={className}
           aria-current={active ? 'page' : undefined}
           onClick={closeMobileMenu}
         >
           {item.label}
-        </a>
+        </Link>
       );
     }
 
