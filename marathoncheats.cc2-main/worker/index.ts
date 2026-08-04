@@ -3,6 +3,7 @@ import {
   SEO_ASSET_PATHS,
   buildEnPrefixStripRedirect,
   buildSeoAssetTrailingSlashRedirect,
+  isStaticAssetPath,
   parseLocalePath,
 } from '../src/seo/localePaths';
 
@@ -47,17 +48,6 @@ const SEO_ASSET_CONTENT_TYPES: Record<string, string> = {
 
 function normalizePathname(pathname: string) {
   return pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
-}
-
-/** Static files that must never receive locale redirects or SPA HTML fallback. */
-export function isStaticAssetPath(pathname: string): boolean {
-  const normalized = normalizePathname(pathname);
-
-  if (SEO_ASSET_PATHS.has(normalized)) return true;
-  if (normalized.startsWith('/assets/') || normalized.startsWith('/_astro/')) return true;
-  if (normalized.startsWith('/favicon')) return true;
-
-  return false;
 }
 
 /**

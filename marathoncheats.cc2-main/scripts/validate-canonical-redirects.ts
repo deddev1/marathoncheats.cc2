@@ -130,6 +130,22 @@ const cases: RedirectCase[] = [
     expectRedirect: false,
   },
   {
+    name: 'vite bundle assets are served without locale redirect',
+    url: `${CANONICAL_ORIGIN}/assets/index-CA_rzBk1.js`,
+    expectRedirect: false,
+  },
+  {
+    name: 'astro build assets are served without locale redirect',
+    url: `${CANONICAL_ORIGIN}/_astro/page.abc123.js`,
+    expectRedirect: false,
+  },
+  {
+    name: '/en/assets strips to /assets without redirect loop',
+    url: `${CANONICAL_ORIGIN}/en/assets/index-CA_rzBk1.js`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/assets/index-CA_rzBk1.js`,
+  },
+  {
     name: '/de/sitemap.xml redirects to canonical /sitemap.xml',
     url: `${CANONICAL_ORIGIN}/de/sitemap.xml`,
     expectRedirect: true,

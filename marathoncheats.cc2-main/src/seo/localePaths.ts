@@ -84,10 +84,35 @@ export const LOCALE_REDIRECT_EXCLUDED_EXACT = new Set([
   '/manifest.json',
 ]);
 
-export const LOCALE_REDIRECT_EXCLUDED_PREFIXES = ['/assets/', '/images/', '/videos/'] as const;
+export const LOCALE_REDIRECT_EXCLUDED_PREFIXES = ['/assets/', '/_astro/', '/images/', '/videos/'] as const;
 
 function hasStaticFileExtension(pathname: string) {
   return /\.[a-z0-9]+$/i.test(pathname);
+}
+
+/** Canonical SEO asset paths (no trailing slash). */
+export const SEO_ASSET_PATHS = new Set([
+  '/robots.txt',
+  '/sitemap-index.xml',
+  '/sitemap.xml',
+  '/video-sitemap.xml',
+  '/image-sitemap.xml',
+]);
+
+/** True for build assets and media that must never be locale-redirected. */
+export function isStaticAssetPath(pathname: string): boolean {
+  const normalized = pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
+
+  if (SEO_ASSET_PATHS.has(normalized)) return true;
+  if (normalized.startsWith('/assets/') || normalized.startsWith('/_astro/')) return true;
+  if (normalized.startsWith('/favicon')) return true;
+  if (normalized.startsWith('/images/')) return true;
+
+  if (normalized.startsWith('/videos/') && hasStaticFileExtension(normalized)) {
+    return true;
+  }
+
+  return false;
 }
 
 export function shouldSkipLocaleRedirect(pathname: string): boolean {
@@ -99,15 +124,6 @@ export function shouldSkipLocaleRedirect(pathname: string): boolean {
 
   return false;
 }
-
-/** Canonical SEO asset paths (no trailing slash). */
-export const SEO_ASSET_PATHS = new Set([
-  '/robots.txt',
-  '/sitemap-index.xml',
-  '/sitemap.xml',
-  '/video-sitemap.xml',
-  '/image-sitemap.xml',
-]);
 
 /**
  * Redirect /en and /en/* to unprefixed English URLs (/ and /*).
