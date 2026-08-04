@@ -44,6 +44,8 @@ An external cheat reads game memory from a separate process rather than injectin
 4. Enable loot ESP last, once you're comfortable with player tracking.
 
 ESP is the single feature that most dramatically changes how Marathon feels. Once you've raided with it, returning without it feels like playing blind.
+
+For a broader Marathon cheats overview, read the [Marathon cheats guide on Zadeyo](https://zadeyo.com/blog/marathon-cheats-guide).
     `,
   },
   {
@@ -104,6 +106,8 @@ Key setting: don't max out to 100%. At 65–80%, it looks like a highly skilled 
 | Aim Key | Mouse 4 (side button) |
 
 Run this config for your first 5 raids. Adjust from there based on your natural aim style.
+
+For more aimbot and combat setup tips, see the [Marathon cheats guide on Zadeyo](https://zadeyo.com/blog/marathon-cheats-guide).
     `,
   },
   {
@@ -163,6 +167,8 @@ Run the spoofer **before** launching Marathon. It patches hardware IDs at the se
 ## Marathon BattlEye and HWID Bans
 
 Marathon uses **BattlEye** anti-cheat — a stronger protection layer compared to Bungie's previous titles like Destiny 2. BattlEye actively monitors system behaviour and is capable of issuing both account bans and HWID bans. Keeping your cheat updated and using a spoofer together gives you the best protection against ban waves.
+
+For a full Marathon cheats and safety overview, read the [Marathon cheats guide on Zadeyo](https://zadeyo.com/blog/marathon-cheats-guide).
     `,
   },
   {
@@ -216,6 +222,8 @@ Marathon cheats give you wallhack-level information, but your movement should st
 Stack these habits across your next five raids: scan, alert, route, filter, fight selectively, rotate on radar, extract early, move naturally. For player ESP, loot ESP, aimbot tools, and loader access, compare **Marathon Cheats** plans on the pricing page — monthly and lifetime options include full ESP and wallhack features for Steam on Windows.
 
 Ready to run these plays with full overlays? View pricing and feature breakdown on the buy page linked below.
+
+For more extraction strategies and cheat setup advice, see the [Marathon cheats guide on Zadeyo](https://zadeyo.com/blog/marathon-cheats-guide).
     `,
   },
 ] as const;

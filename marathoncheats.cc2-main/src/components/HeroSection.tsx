@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
+import { ZADEYO_CHECKOUT_URL, ZADEYO_MARATHON_GUIDE_URL } from '../content/checkout';
 import { getSiteVideo } from '../content/videos';
 import { useI18n } from '../i18n/useI18n';
 import { HOME_PAGE_HEADING } from '../seo/pageHeadings';
@@ -87,7 +87,7 @@ export function HeroSection() {
               Read our ESP, Aimbot &amp; Spoofer guides →
             </Link>
             <a
-              href="https://zadeyo.com/blog/marathon-cheats-guide"
+              href={ZADEYO_MARATHON_GUIDE_URL}
               className="hero-section__guides-link"
               style={{ marginLeft: 16 }}
               target="_blank"

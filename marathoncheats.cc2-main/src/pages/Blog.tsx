@@ -5,6 +5,7 @@ import { NotFoundPage } from './NotFound';
 import { SeoImage } from '../components/SeoImage';
 import { BLOG_LIST_HEADING } from '../seo/pageHeadings';
 import { BLOG_POSTS, type BlogPost } from '../content/blogPosts';
+import { ZADEYO_MARATHON_GUIDE_URL } from '../content/checkout';
 
 const CATEGORIES = ['All', 'ESP', 'Aimbot', 'Spoofer', 'Guides'];
 
@@ -277,13 +278,67 @@ export function BlogListPage() {
               <li><Link to="/marathoncheats-buy" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Pricing &amp; features</Link></li>
               <li><Link to="/blog/marathoncheats-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>ESP guide</Link></li>
               <li><Link to="/blog/marathoncheats-aimbot" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Aimbot guide</Link></li>
+              <li><Link to="/blog/marathon-extraction-tips-with-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Extraction tips guide</Link></li>
               <li><Link to="/blog/marathoncheats-hwid" className="hero-section__guides-link" style={{ marginBottom: 0 }}>HWID guide</Link></li>
+              <li>
+                <a
+                  href={ZADEYO_MARATHON_GUIDE_URL}
+                  className="hero-section__guides-link"
+                  style={{ marginBottom: 0 }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Marathon cheats guide (Zadeyo)
+                </a>
+              </li>
             </ul>
           </nav>
         </AnimatedSection>
       </div>
     </div>
   );
+}
+
+function renderInlineText(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = [];
+  const regex = /\[([^\]]+)\]\(([^)]+)\)|(\*\*.+?\*\*)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[1] && match[2]) {
+      parts.push(
+        <a
+          key={key++}
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'var(--accent-bright)', textDecoration: 'underline' }}
+        >
+          {match[1]}
+        </a>,
+      );
+    } else if (match[3]) {
+      parts.push(
+        <strong key={key++} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
+          {match[3].replace(/\*\*/g, '')}
+        </strong>,
+      );
+    }
+
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
 }
 
 function renderBody(body: string) {
@@ -420,7 +475,6 @@ function renderBody(body: string) {
         }}>{line.replace(/^\d+\.\s/, '')}</li>
       );
     } else {
-      const parts = line.split(/(\*\*.+?\*\*)/g);
       elements.push(
         <p key={i} style={{
           color: 'var(--text-secondary)',
@@ -429,13 +483,7 @@ function renderBody(body: string) {
           lineHeight: 1.75,
           margin: '0 0 14px',
         }}>
-          {parts.map((part, pi) =>
-            part.startsWith('**') ? (
-              <strong key={pi} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
-                {part.replace(/\*\*/g, '')}
-              </strong>
-            ) : part
-          )}
+          {renderInlineText(line)}
         </p>
       );
     }
@@ -585,6 +633,52 @@ export function BlogPostPage() {
             View Pricing &amp; Features
           </Link>
         </div>
+      </div>
+
+      <div style={{
+        maxWidth: 800,
+        margin: '0 auto',
+        padding: '0 clamp(20px, 6vw, 80px) 48px',
+      }}>
+        <nav aria-label="Related pages">
+          <h2 style={{
+            fontFamily: 'var(--font-display)',
+            fontWeight: 700,
+            fontSize: '0.875rem',
+            color: 'var(--text-primary)',
+            textTransform: 'uppercase',
+            letterSpacing: '0.08em',
+            marginBottom: 16,
+          }}>
+            More on Marathon Cheats
+          </h2>
+          <ul style={{
+            listStyle: 'none',
+            margin: 0,
+            padding: 0,
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '12px 24px',
+          }}>
+            <li><Link to="/" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Homepage</Link></li>
+            <li><Link to="/marathoncheats-buy" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Pricing &amp; features</Link></li>
+            <li><Link to="/blog/marathoncheats-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>ESP guide</Link></li>
+            <li><Link to="/blog/marathoncheats-aimbot" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Aimbot guide</Link></li>
+            <li><Link to="/blog/marathon-extraction-tips-with-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Extraction tips guide</Link></li>
+            <li><Link to="/blog/marathoncheats-hwid" className="hero-section__guides-link" style={{ marginBottom: 0 }}>HWID guide</Link></li>
+            <li>
+              <a
+                href={ZADEYO_MARATHON_GUIDE_URL}
+                className="hero-section__guides-link"
+                style={{ marginBottom: 0 }}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Marathon cheats guide (Zadeyo)
+              </a>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       {/* Related posts */}

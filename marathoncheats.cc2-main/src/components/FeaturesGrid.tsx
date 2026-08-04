@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { AimbotSectionBreadcrumb } from './SectionBreadcrumb';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
+import { ZADEYO_CHECKOUT_URL, ZADEYO_MARATHON_GUIDE_URL } from '../content/checkout';
 import { SITE_IMAGES } from '../content/siteImages';
 import { SeoImage } from './SeoImage';
 
@@ -455,6 +455,15 @@ export function FeaturesGrid() {  return (
                 </Link>
                 {' · '}
                 <a
+                  href={ZADEYO_MARATHON_GUIDE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}
+                >
+                  Marathon cheats guide
+                </a>
+                {' · '}
+                <a
                   href={ZADEYO_CHECKOUT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -562,6 +571,15 @@ export function FeaturesGrid() {  return (
                 <Link to="/blog/marathoncheats-aimbot" style={{ color: 'var(--accent-bright)', textDecoration: 'none' }}>
                   Read the Marathon aimbot guide →
                 </Link>
+                {' · '}
+                <a
+                  href={ZADEYO_MARATHON_GUIDE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}
+                >
+                  Marathon cheats guide
+                </a>
                 {' · '}
                 <Link to="/marathoncheats-buy#faq" style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}>
                   Purchase FAQ
