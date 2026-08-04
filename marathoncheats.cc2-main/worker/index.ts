@@ -4,6 +4,7 @@ import {
   buildEnPrefixStripRedirect,
   buildSeoAssetTrailingSlashRedirect,
   isStaticAssetPath,
+  parseLocalePath,
 } from '../src/seo/localePaths';
 
 /** Must match `SITE_URL` in src/seo/config.ts */
@@ -51,7 +52,7 @@ function normalizePathname(pathname: string) {
 
 /**
  * Resolve a request path to its canonical static asset path.
- * Strips a mistaken /en prefix (e.g. /en/assets/app.js -> /assets/app.js) without locale rewriting.
+ * Strips mistaken /en or locale prefixes (e.g. /de/sitemap.xml -> /sitemap.xml).
  */
 export function resolveStaticAssetPathname(pathname: string): string | null {
   const normalized = normalizePathname(pathname);
@@ -61,6 +62,9 @@ export function resolveStaticAssetPathname(pathname: string): string | null {
     const stripped = normalizePathname(normalized.slice(3) || '/');
     if (isStaticAssetPath(stripped)) return stripped;
   }
+
+  const { path } = parseLocalePath(normalized);
+  if (SEO_ASSET_PATHS.has(path)) return path;
 
   return null;
 }
