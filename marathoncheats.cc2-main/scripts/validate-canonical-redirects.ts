@@ -129,6 +129,24 @@ const cases: RedirectCase[] = [
     url: `${CANONICAL_ORIGIN}/assets/app.js`,
     expectRedirect: false,
   },
+  {
+    name: '/de/sitemap.xml redirects to canonical /sitemap.xml',
+    url: `${CANONICAL_ORIGIN}/de/sitemap.xml`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/sitemap.xml`,
+  },
+  {
+    name: '/fr/sitemap-index.xml redirects to canonical /sitemap-index.xml',
+    url: `${CANONICAL_ORIGIN}/fr/sitemap-index.xml`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/sitemap-index.xml`,
+  },
+  {
+    name: '/de/video-sitemap.xml redirects to canonical /video-sitemap.xml',
+    url: `${CANONICAL_ORIGIN}/de/video-sitemap.xml`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/video-sitemap.xml`,
+  },
 ];
 
 const errors: string[] = [];
