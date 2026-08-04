@@ -286,6 +286,48 @@ export function BlogListPage() {
   );
 }
 
+function renderInlineText(text: string): React.ReactNode[] {
+  const parts: React.ReactNode[] = [];
+  const regex = /\[([^\]]+)\]\(([^)]+)\)|(\*\*.+?\*\*)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[1] && match[2]) {
+      parts.push(
+        <a
+          key={key++}
+          href={match[2]}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ color: 'var(--accent-bright)', textDecoration: 'underline' }}
+        >
+          {match[1]}
+        </a>,
+      );
+    } else if (match[3]) {
+      parts.push(
+        <strong key={key++} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
+          {match[3].replace(/\*\*/g, '')}
+        </strong>,
+      );
+    }
+
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
+
+  return parts;
+}
+
 function renderBody(body: string) {
   const lines = body.trim().split('\n');
   const elements: React.ReactNode[] = [];
@@ -420,7 +462,6 @@ function renderBody(body: string) {
         }}>{line.replace(/^\d+\.\s/, '')}</li>
       );
     } else {
-      const parts = line.split(/(\*\*.+?\*\*)/g);
       elements.push(
         <p key={i} style={{
           color: 'var(--text-secondary)',
@@ -429,13 +470,7 @@ function renderBody(body: string) {
           lineHeight: 1.75,
           margin: '0 0 14px',
         }}>
-          {parts.map((part, pi) =>
-            part.startsWith('**') ? (
-              <strong key={pi} style={{ color: 'var(--text-primary)', fontWeight: 600 }}>
-                {part.replace(/\*\*/g, '')}
-              </strong>
-            ) : part
-          )}
+          {renderInlineText(line)}
         </p>
       );
     }
