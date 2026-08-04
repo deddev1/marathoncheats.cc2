@@ -84,10 +84,25 @@ export const LOCALE_REDIRECT_EXCLUDED_EXACT = new Set([
   '/manifest.json',
 ]);
 
-export const LOCALE_REDIRECT_EXCLUDED_PREFIXES = ['/assets/', '/images/', '/videos/'] as const;
+export const LOCALE_REDIRECT_EXCLUDED_PREFIXES = ['/assets/', '/_astro/', '/images/', '/videos/'] as const;
 
 function hasStaticFileExtension(pathname: string) {
   return /\.[a-z0-9]+$/i.test(pathname);
+}
+
+/** True for build assets and media that must never be locale-redirected. */
+export function isStaticAssetPath(pathname: string): boolean {
+  const normalized = pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
+
+  if (normalized.startsWith('/assets/') || normalized.startsWith('/_astro/') || normalized.startsWith('/images/')) {
+    return true;
+  }
+
+  if (normalized.startsWith('/videos/') && hasStaticFileExtension(normalized)) {
+    return true;
+  }
+
+  return false;
 }
 
 export function shouldSkipLocaleRedirect(pathname: string): boolean {

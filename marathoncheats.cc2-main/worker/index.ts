@@ -3,6 +3,7 @@ import {
   SEO_ASSET_PATHS,
   buildEnPrefixStripRedirect,
   buildSeoAssetTrailingSlashRedirect,
+  isStaticAssetPath,
 } from '../src/seo/localePaths';
 
 /** Must match `SITE_URL` in src/seo/config.ts */
@@ -27,7 +28,7 @@ const SECURITY_HEADERS: Record<string, string> = {
   'X-XSS-Protection': '1; mode=block',
 };
 
-const LONG_CACHE_PATH_PREFIXES = ['/assets/', '/images/', '/videos/'];
+const LONG_CACHE_PATH_PREFIXES = ['/assets/', '/_astro/', '/images/', '/videos/'];
 const SHORT_CACHE_PATHS = new Set([
   '/sitemap-index.xml',
   '/sitemap.xml',
@@ -51,6 +52,33 @@ function normalizePathname(pathname: string) {
 function looksLikeHtml(body: string) {
   const trimmed = body.trimStart().toLowerCase();
   return trimmed.startsWith('<!doctype html') || trimmed.startsWith('<html');
+}
+
+function isHtmlContentType(contentType: string | null) {
+  return Boolean(contentType?.toLowerCase().includes('text/html'));
+}
+
+/**
+ * Serve /assets/*, /_astro/*, /images/*, /videos/* directly.
+ * Never locale-redirect or SPA-fallback these paths to HTML.
+ */
+export async function serveStaticAsset(
+  request: Request,
+  env: Env,
+  pathname: string,
+): Promise<Response | null> {
+  if (!isStaticAssetPath(pathname)) return null;
+
+  const assetResponse = await env.ASSETS.fetch(request);
+  if (!assetResponse.ok) {
+    return withResponseHeaders(new Response('Not Found', { status: 404 }), pathname);
+  }
+
+  if (isHtmlContentType(assetResponse.headers.get('Content-Type'))) {
+    return withResponseHeaders(new Response('Not Found', { status: 404 }), pathname);
+  }
+
+  return withResponseHeaders(assetResponse, pathname);
 }
 
 /** Serve robots/sitemap files directly so SPA fallback never returns HTML to crawlers. */
@@ -121,6 +149,11 @@ export function buildRequestRedirect(request: Request): Response | null {
 
   const rawPathname = requestUrl.pathname;
   const pathname = rawPathname === '/' ? '/' : rawPathname.replace(/\/$/, '') || '/';
+
+  if (isStaticAssetPath(pathname)) {
+    return null;
+  }
+
   const embedPath = VIDEO_WATCH_REDIRECTS[pathname];
 
   let destinationPath = embedPath ?? pathname;
@@ -187,12 +220,18 @@ export function withResponseHeaders(response: Response, pathname: string) {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const requestUrl = new URL(request.url);
+    const pathname = normalizePathname(requestUrl.pathname);
+
+    const staticAsset = await serveStaticAsset(request, env, pathname);
+    if (staticAsset) {
+      return staticAsset;
+    }
+
     const redirect = buildRequestRedirect(request);
     if (redirect) {
       return withResponseHeaders(redirect, requestUrl.pathname);
     }
 
-    const pathname = normalizePathname(requestUrl.pathname);
     const seoAsset = await serveSeoAsset(request, env, pathname);
     if (seoAsset) {
       return seoAsset;
