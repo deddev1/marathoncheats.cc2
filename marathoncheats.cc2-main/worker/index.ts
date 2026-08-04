@@ -49,36 +49,39 @@ function normalizePathname(pathname: string) {
   return pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
 }
 
+/**
+ * Resolve a request path to its canonical static asset path.
+ * Strips a mistaken /en prefix (e.g. /en/assets/app.js -> /assets/app.js) without locale rewriting.
+ */
+export function resolveStaticAssetPathname(pathname: string): string | null {
+  const normalized = normalizePathname(pathname);
+  if (isStaticAssetPath(normalized)) return normalized;
+
+  if (normalized.startsWith('/en/')) {
+    const stripped = normalizePathname(normalized.slice(3) || '/');
+    if (isStaticAssetPath(stripped)) return stripped;
+  }
+
+  return null;
+}
+
+function mustNotReturnHtml(pathname: string): boolean {
+  return (
+    pathname.startsWith('/assets/') ||
+    pathname.startsWith('/_astro/') ||
+    /\.(js|mjs|css)(\?|$)/i.test(pathname)
+  );
+}
+
 function looksLikeHtml(body: string) {
   const trimmed = body.trimStart().toLowerCase();
   return trimmed.startsWith('<!doctype html') || trimmed.startsWith('<html');
 }
 
-function isHtmlContentType(contentType: string | null) {
-  return Boolean(contentType?.toLowerCase().includes('text/html'));
-}
-
-/**
- * Serve /assets/*, /_astro/*, /images/*, /videos/* directly.
- * Never locale-redirect or SPA-fallback these paths to HTML.
- */
-export async function serveStaticAsset(
-  request: Request,
-  env: Env,
-  pathname: string,
-): Promise<Response | null> {
-  if (!isStaticAssetPath(pathname)) return null;
-
-  const assetResponse = await env.ASSETS.fetch(request);
-  if (!assetResponse.ok) {
-    return withResponseHeaders(new Response('Not Found', { status: 404 }), pathname);
-  }
-
-  if (isHtmlContentType(assetResponse.headers.get('Content-Type'))) {
-    return withResponseHeaders(new Response('Not Found', { status: 404 }), pathname);
-  }
-
-  return withResponseHeaders(assetResponse, pathname);
+function notFoundResponse(pathname: string): Response {
+  const headers = new Headers();
+  applyResponseHeaders(pathname, headers);
+  return new Response('Not Found', { status: 404, headers });
 }
 
 /** Serve robots/sitemap files directly so SPA fallback never returns HTML to crawlers. */
@@ -97,6 +100,27 @@ export async function serveSeoAsset(request: Request, env: Env, pathname: string
   headers.set('Content-Type', SEO_ASSET_CONTENT_TYPES[normalized] ?? 'application/xml; charset=utf-8');
   applyResponseHeaders(normalized, headers);
   return new Response(body, { status: 200, headers });
+}
+
+/** Fetch a static asset at its canonical path and reject SPA HTML masquerading as JS/CSS. */
+export async function serveStaticAsset(request: Request, env: Env, pathname: string): Promise<Response> {
+  const requestUrl = new URL(request.url);
+  const assetUrl = new URL(pathname + requestUrl.search, request.url);
+  const assetResponse = await env.ASSETS.fetch(new Request(assetUrl.toString(), request));
+
+  if (assetResponse.ok && mustNotReturnHtml(pathname)) {
+    const contentType = assetResponse.headers.get('Content-Type') ?? '';
+    if (contentType.includes('text/html')) {
+      return notFoundResponse(pathname);
+    }
+
+    const body = await assetResponse.clone().text();
+    if (looksLikeHtml(body)) {
+      return notFoundResponse(pathname);
+    }
+  }
+
+  return withResponseHeaders(assetResponse, pathname);
 }
 
 function requestUsesHttps(request: Request, requestUrl: URL) {
@@ -149,9 +173,31 @@ export function buildRequestRedirect(request: Request): Response | null {
 
   const rawPathname = requestUrl.pathname;
   const pathname = rawPathname === '/' ? '/' : rawPathname.replace(/\/$/, '') || '/';
+  const staticAssetPath = resolveStaticAssetPathname(pathname);
 
-  if (isStaticAssetPath(pathname)) {
-    return null;
+  const usesHttps = requestUsesHttps(request, requestUrl);
+  const needsHttpsRedirect = !usesHttps;
+  const needsWwwRedirect = isWwwHost;
+
+  // Static assets: host/protocol normalization and /en prefix stripping only — never locale rewriting.
+  if (staticAssetPath) {
+    const needsEnPrefixStrip = staticAssetPath !== pathname;
+    const slashCheckPath =
+      rawPathname.endsWith('/') && rawPathname !== '/' ? rawPathname : null;
+    const seoTrailingSlashRedirect = slashCheckPath
+      ? buildSeoAssetTrailingSlashRedirect(slashCheckPath, requestUrl.search)
+      : null;
+
+    if (seoTrailingSlashRedirect) {
+      return Response.redirect(seoTrailingSlashRedirect, 301);
+    }
+
+    if (!needsHttpsRedirect && !needsWwwRedirect && !needsEnPrefixStrip) {
+      return null;
+    }
+
+    const destination = buildCanonicalDestination(staticAssetPath, requestUrl.search);
+    return Response.redirect(destination.toString(), 301);
   }
 
   const embedPath = VIDEO_WATCH_REDIRECTS[pathname];
@@ -169,9 +215,6 @@ export function buildRequestRedirect(request: Request): Response | null {
     destinationPath = new URL(seoTrailingSlashRedirect).pathname;
   }
 
-  const usesHttps = requestUsesHttps(request, requestUrl);
-  const needsHttpsRedirect = !usesHttps;
-  const needsWwwRedirect = isWwwHost;
   const needsVideoRedirect = Boolean(embedPath);
   const needsLocaleRedirect = Boolean(localeRedirect);
   const needsSeoTrailingSlashRedirect = Boolean(seoTrailingSlashRedirect);
@@ -220,11 +263,23 @@ export function withResponseHeaders(response: Response, pathname: string) {
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const requestUrl = new URL(request.url);
-    const pathname = normalizePathname(requestUrl.pathname);
+    const staticAssetPath = resolveStaticAssetPathname(requestUrl.pathname);
 
-    const staticAsset = await serveStaticAsset(request, env, pathname);
-    if (staticAsset) {
-      return staticAsset;
+    // Serve static assets before any page-route / SPA catch-all logic.
+    if (staticAssetPath) {
+      const redirect = buildRequestRedirect(request);
+      if (redirect) {
+        return withResponseHeaders(redirect, requestUrl.pathname);
+      }
+
+      if (SEO_ASSET_PATHS.has(staticAssetPath)) {
+        const seoAsset = await serveSeoAsset(request, env, staticAssetPath);
+        if (seoAsset) {
+          return seoAsset;
+        }
+      }
+
+      return serveStaticAsset(request, env, staticAssetPath);
     }
 
     const redirect = buildRequestRedirect(request);
@@ -232,6 +287,7 @@ export default {
       return withResponseHeaders(redirect, requestUrl.pathname);
     }
 
+    const pathname = normalizePathname(requestUrl.pathname);
     const seoAsset = await serveSeoAsset(request, env, pathname);
     if (seoAsset) {
       return seoAsset;
