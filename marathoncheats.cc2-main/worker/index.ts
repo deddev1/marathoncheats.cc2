@@ -48,6 +48,17 @@ function normalizePathname(pathname: string) {
   return pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
 }
 
+/** Only page routes may receive locale/path redirects; static assets and SEO files are served as-is. */
+function isPageRoute(pathname: string): boolean {
+  const normalized = normalizePathname(pathname);
+
+  if (normalized === '/robots.txt' || normalized === '/sitemap.xml') return false;
+  if (normalized.startsWith('/assets/') || normalized.startsWith('/_astro/')) return false;
+  if (normalized.startsWith('/favicon')) return false;
+
+  return true;
+}
+
 function looksLikeHtml(body: string) {
   const trimmed = body.trimStart().toLowerCase();
   return trimmed.startsWith('<!doctype html') || trimmed.startsWith('<html');
@@ -124,7 +135,9 @@ export function buildRequestRedirect(request: Request): Response | null {
   const embedPath = VIDEO_WATCH_REDIRECTS[pathname];
 
   let destinationPath = embedPath ?? pathname;
-  const localeRedirect = buildEnPrefixStripRedirect(destinationPath);
+  const canApplyLocaleRedirect =
+    isPageRoute(pathname) || pathname === '/en' || pathname.startsWith('/en/');
+  const localeRedirect = canApplyLocaleRedirect ? buildEnPrefixStripRedirect(destinationPath) : null;
   if (localeRedirect) {
     destinationPath = new URL(localeRedirect).pathname;
   }
