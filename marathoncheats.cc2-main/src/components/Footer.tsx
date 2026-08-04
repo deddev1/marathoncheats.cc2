@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { ZADEYO_SUPPORT_URL } from '../content/support';
-import { ZADEYO_MARATHON_GUIDE_URL } from '../content/checkout';
 import { SiteLogo } from './SiteLogo';
 import { useLocalizedPath } from '../seo/useSeoLocale';
 
@@ -15,18 +14,14 @@ export function Footer() {
   const privacyPath = useLocalizedPath('/privacy');
   const refundPath = useLocalizedPath('/refund');
 
-  const EXPLORE_LINKS: Array<
-    | { label: string; to: string }
-    | { label: string; href: string; external: true }
-  > = [
+  const EXPLORE_LINKS = [
     { label: 'Marathon Cheats overview', to: homePath },
     { label: 'Marathon cheat pricing', to: storePath },
     { label: 'Marathon ESP guide', to: espGuidePath },
     { label: 'Marathon aimbot guide', to: aimbotGuidePath },
     { label: 'Marathon anti-cheat & HWID', to: hwidGuidePath },
     { label: 'All cheat guides', to: blogPath },
-    { label: 'Marathon cheats guide (Zadeyo)', href: ZADEYO_MARATHON_GUIDE_URL, external: true },
-  ];
+  ] as const;
 
   const HELP_LINKS: Array<
     | { label: string; to: string }
@@ -61,23 +56,11 @@ export function Footer() {
 
           <div>
             <p className="site-footer__col-title">Explore</p>
-            {EXPLORE_LINKS.map(link =>
-              'to' in link ? (
+            {EXPLORE_LINKS.map(link => (
                 <Link key={link.label} to={link.to} className="site-footer__link">
                   {link.label}
                 </Link>
-              ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="site-footer__link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {link.label}
-                </a>
-              ),
-            )}
+              ))}
           </div>
 
           <div>

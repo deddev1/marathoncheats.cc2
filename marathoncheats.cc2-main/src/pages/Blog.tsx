@@ -5,7 +5,6 @@ import { NotFoundPage } from './NotFound';
 import { SeoImage } from '../components/SeoImage';
 import { BLOG_LIST_HEADING } from '../seo/pageHeadings';
 import { BLOG_POSTS, type BlogPost } from '../content/blogPosts';
-import { ZADEYO_MARATHON_GUIDE_URL } from '../content/checkout';
 
 const CATEGORIES = ['All', 'ESP', 'Aimbot', 'Spoofer', 'Guides'];
 
@@ -278,19 +277,7 @@ export function BlogListPage() {
               <li><Link to="/marathoncheats-buy" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Pricing &amp; features</Link></li>
               <li><Link to="/blog/marathoncheats-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>ESP guide</Link></li>
               <li><Link to="/blog/marathoncheats-aimbot" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Aimbot guide</Link></li>
-              <li><Link to="/blog/marathon-extraction-tips-with-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Extraction tips guide</Link></li>
               <li><Link to="/blog/marathoncheats-hwid" className="hero-section__guides-link" style={{ marginBottom: 0 }}>HWID guide</Link></li>
-              <li>
-                <a
-                  href={ZADEYO_MARATHON_GUIDE_URL}
-                  className="hero-section__guides-link"
-                  style={{ marginBottom: 0 }}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Marathon cheats guide (Zadeyo)
-                </a>
-              </li>
             </ul>
           </nav>
         </AnimatedSection>
@@ -633,52 +620,6 @@ export function BlogPostPage() {
             View Pricing &amp; Features
           </Link>
         </div>
-      </div>
-
-      <div style={{
-        maxWidth: 800,
-        margin: '0 auto',
-        padding: '0 clamp(20px, 6vw, 80px) 48px',
-      }}>
-        <nav aria-label="Related pages">
-          <h2 style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '0.875rem',
-            color: 'var(--text-primary)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            marginBottom: 16,
-          }}>
-            More on Marathon Cheats
-          </h2>
-          <ul style={{
-            listStyle: 'none',
-            margin: 0,
-            padding: 0,
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '12px 24px',
-          }}>
-            <li><Link to="/" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Homepage</Link></li>
-            <li><Link to="/marathoncheats-buy" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Pricing &amp; features</Link></li>
-            <li><Link to="/blog/marathoncheats-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>ESP guide</Link></li>
-            <li><Link to="/blog/marathoncheats-aimbot" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Aimbot guide</Link></li>
-            <li><Link to="/blog/marathon-extraction-tips-with-esp" className="hero-section__guides-link" style={{ marginBottom: 0 }}>Extraction tips guide</Link></li>
-            <li><Link to="/blog/marathoncheats-hwid" className="hero-section__guides-link" style={{ marginBottom: 0 }}>HWID guide</Link></li>
-            <li>
-              <a
-                href={ZADEYO_MARATHON_GUIDE_URL}
-                className="hero-section__guides-link"
-                style={{ marginBottom: 0 }}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Marathon cheats guide (Zadeyo)
-              </a>
-            </li>
-          </ul>
-        </nav>
       </div>
 
       {/* Related posts */}

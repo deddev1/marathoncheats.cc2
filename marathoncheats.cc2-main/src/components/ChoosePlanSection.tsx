@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { PRE_PURCHASE_CHECKLIST } from '../content/licenseIncludes';
-import { ZADEYO_CHECKOUT_URL, ZADEYO_MARATHON_GUIDE_URL } from '../content/checkout';
+import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
 
 const CHECKOUT_URL = ZADEYO_CHECKOUT_URL;
 
@@ -27,13 +27,6 @@ const PLAN_STEPS = [
         desc: 'Understand hardware bans and how to transfer your license to a new PC.',
         href: '/blog/marathoncheats-hwid',
         linkLabel: 'HWID guide',
-      },
-      {
-        label: 'Full setup guide',
-        desc: 'Broader Marathon cheats overview, raid tips, and setup walkthrough.',
-        href: ZADEYO_MARATHON_GUIDE_URL,
-        external: true,
-        linkLabel: 'Marathon cheats guide',
       },
     ],
   },

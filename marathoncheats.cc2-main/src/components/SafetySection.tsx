@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { FeatureShowcaseGallery } from './FeatureShowcaseGallery';
-import { ZADEYO_CHECKOUT_URL, ZADEYO_MARATHON_GUIDE_URL } from '../content/checkout';
+import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
 import { ZADEYO_SUPPORT_URL } from '../content/support';
 import { SITE_IMAGES } from '../content/siteImages';
 import { SeoImage } from './SeoImage';
@@ -59,17 +59,6 @@ const FEATURE_PREVIEW_CARDS = [
     imageAlt: 'Marathon loot ESP highlighting valuable items',
     href: ZADEYO_CHECKOUT_URL,
     linkLabel: 'View pricing',
-    external: true,
-  },
-  {
-    tag: 'Guides',
-    title: 'Full Marathon cheats walkthrough',
-    description:
-      'Setup tips, raid strategy, and feature breakdowns for Bungie\'s Marathon extraction shooter — from a trusted external guide.',
-    image: SITE_IMAGES.guide,
-    imageAlt: 'Marathon cheats setup and strategy guide',
-    href: ZADEYO_MARATHON_GUIDE_URL,
-    linkLabel: 'Read Marathon cheats guide',
     external: true,
   },
   {
