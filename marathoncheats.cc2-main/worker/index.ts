@@ -1,6 +1,7 @@
 import { SITE_VIDEOS, getVideoWatchPath } from '../src/content/videos';
 import {
   SEO_ASSET_PATHS,
+  buildCanonicalPathRedirect,
   buildEnPrefixStripRedirect,
   buildSeoAssetTrailingSlashRedirect,
   isStaticAssetPath,
@@ -212,6 +213,11 @@ export function buildRequestRedirect(request: Request): Response | null {
     destinationPath = new URL(localeRedirect).pathname;
   }
 
+  const canonicalPathRedirect = buildCanonicalPathRedirect(rawPathname, requestUrl.search);
+  if (canonicalPathRedirect) {
+    destinationPath = new URL(canonicalPathRedirect).pathname;
+  }
+
   const slashCheckPath =
     rawPathname.endsWith('/') && rawPathname !== '/' ? `${destinationPath}/` : destinationPath;
   const seoTrailingSlashRedirect = buildSeoAssetTrailingSlashRedirect(slashCheckPath, requestUrl.search);
@@ -221,9 +227,17 @@ export function buildRequestRedirect(request: Request): Response | null {
 
   const needsVideoRedirect = Boolean(embedPath);
   const needsLocaleRedirect = Boolean(localeRedirect);
+  const needsCanonicalPathRedirect = Boolean(canonicalPathRedirect);
   const needsSeoTrailingSlashRedirect = Boolean(seoTrailingSlashRedirect);
 
-  if (!needsHttpsRedirect && !needsWwwRedirect && !needsVideoRedirect && !needsLocaleRedirect && !needsSeoTrailingSlashRedirect) {
+  if (
+    !needsHttpsRedirect &&
+    !needsWwwRedirect &&
+    !needsVideoRedirect &&
+    !needsLocaleRedirect &&
+    !needsCanonicalPathRedirect &&
+    !needsSeoTrailingSlashRedirect
+  ) {
     return null;
   }
 
