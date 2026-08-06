@@ -145,6 +145,41 @@ export function buildEnPrefixStripRedirect(pathname: string, search = ''): strin
   return null;
 }
 
+/**
+ * Redirect path variants that do not match canonical URL rules:
+ * - Locale homes: /de -> /de/
+ * - Content pages: /blog/ -> /blog, /de/blog/ -> /de/blog
+ */
+export function buildCanonicalPathRedirect(pathname: string, search = ''): string | null {
+  if (shouldSkipLocaleRedirect(pathname) || isStaticAssetPath(pathname)) return null;
+
+  const normalized = pathname === '/' ? '/' : pathname.replace(/\/$/, '') || '/';
+
+  if (normalized === '/en' || normalized.startsWith('/en/')) {
+    return null;
+  }
+
+  const segments = normalized.split('/').filter(Boolean);
+
+  if (
+    segments.length === 1 &&
+    isPrefixedLocaleSegment(segments[0]) &&
+    !pathname.endsWith('/')
+  ) {
+    return new URL(`/${segments[0]}/${search}`, SITE_URL).toString();
+  }
+
+  if (pathname.endsWith('/') && pathname !== '/') {
+    const { path } = parseLocalePath(pathname);
+    if (path !== '/') {
+      const withoutSlash = pathname.replace(/\/$/, '') || '/';
+      return new URL(`${withoutSlash}${search}`, SITE_URL).toString();
+    }
+  }
+
+  return null;
+}
+
 /** Redirect trailing-slash SEO assets to canonical paths, e.g. /sitemap.xml/ -> /sitemap.xml */
 export function buildSeoAssetTrailingSlashRedirect(pathname: string, search = ''): string | null {
   if (!pathname.endsWith('/') || pathname === '/') return null;

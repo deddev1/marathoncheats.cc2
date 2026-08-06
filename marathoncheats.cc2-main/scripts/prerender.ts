@@ -19,8 +19,8 @@ import { buildBreadcrumbJsonLd, AIMBOT_BREADCRUMB } from '../src/seo/breadcrumbS
 import { buildHomepageImageSchemas, buildImageGallerySchema } from '../src/seo/imageSchema';
 import { getHomePageHeading } from '../src/seo/localized/pageHeadings';
 import { getLocalizedHomeFaqs } from '../src/seo/localized/faqs';
-import { SEO_LOCALES, type SeoLocaleCode } from '../src/seo/locales';
-import { buildLocalizedPath, parseLocalePath } from '../src/seo/localePaths';
+import { SEO_LOCALES, type SeoLocaleCode, getSeoLocale, seoLocaleToI18n, toOgLocaleFromSeo } from '../src/seo/locales';
+import { buildLocalizedPath, buildHreflangAlternates, parseLocalePath } from '../src/seo/localePaths';
 import { buildVideoObjectJsonLd } from '../src/seo/videoSchema';
 import { buildSoftwareApplicationSchema } from '../src/seo/softwareApplicationSchema';
 import { getLegalHeading } from '../src/seo/pageHeadings';
@@ -57,6 +57,20 @@ function replaceMetaContent(html: string, selector: string, content: string) {
 function replaceLinkHref(html: string, rel: string, href: string) {
   const pattern = new RegExp(`(<link[^>]*rel="${rel}"[^>]*href=")([^"]*)(")`, 'i');
   return html.replace(pattern, `$1${escapeHtml(href)}$3`);
+}
+
+function replaceHtmlLang(html: string, lang: string) {
+  return html.replace(/<html([^>]*)lang="[^"]*"/i, `<html$1lang="${escapeHtml(lang)}"`);
+}
+
+function injectHreflangLinks(html: string, appPath: string) {
+  const links = buildHreflangAlternates(appPath)
+    .map(
+      alternate =>
+        `    <link rel="alternate" hreflang="${escapeHtml(alternate.hreflang)}" href="${escapeHtml(alternate.href)}" />`,
+    )
+    .join('\n');
+  return html.replace('</head>', `${links}\n  </head>`);
 }
 
 function replaceTitle(html: string, title: string) {
@@ -114,7 +128,7 @@ function buildRoutesForLocale(locale: SeoLocaleCode): PrerenderRoute[] {
       description: HOME_SEO[locale].description,
       heading: homeHeading.h1,
       intro: homeHeading.intro,
-      includeHomeJsonLd: true,
+      includeHomeJsonLd: locale === 'en',
       structuredData: [
         buildFaqPageSchema(getLocalizedHomeFaqs(locale)),
         buildBreadcrumbJsonLd(AIMBOT_BREADCRUMB, locale),
@@ -224,13 +238,19 @@ function applyRouteSeo(template: string, route: PrerenderRoute) {
   const robots = route.noindex ? 'noindex, follow' : 'index, follow';
   const type = route.type ?? 'website';
 
+  const localeMeta = getSeoLocale(locale);
+  const lang = seoLocaleToI18n(locale);
+  const ogLocale = localeMeta?.ogLocale ?? 'en_US';
+
   let html = template;
+  html = replaceHtmlLang(html, lang);
   html = replaceTitle(html, route.title);
   html = replaceMetaContent(html, 'name="description"', route.description);
   html = replaceMetaContent(html, 'name="robots"', robots);
   html = replaceLinkHref(html, 'canonical', canonical);
   html = replaceMetaContent(html, 'property="og:type"', type);
   html = replaceMetaContent(html, 'property="og:url"', canonical);
+  html = replaceMetaContent(html, 'property="og:locale"', ogLocale);
   html = replaceMetaContent(html, 'property="og:title"', route.title);
   html = replaceMetaContent(html, 'property="og:description"', route.description);
   html = replaceMetaContent(html, 'property="og:image"', image);
@@ -245,6 +265,7 @@ function applyRouteSeo(template: string, route: PrerenderRoute) {
   html = replaceMetaContent(html, 'name="twitter:title"', route.title);
   html = replaceMetaContent(html, 'name="twitter:description"', route.description);
   html = replaceMetaContent(html, 'name="twitter:image"', image);
+  html = injectHreflangLinks(html, appPath);
 
   if (!route.includeHomeJsonLd) {
     html = html.replace(

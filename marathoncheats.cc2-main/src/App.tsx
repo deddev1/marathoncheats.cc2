@@ -231,7 +231,7 @@ function RouteSeo() {
       path="/"
       locale={locale}
       lang={i18nLang}
-      includeHomeJsonLd
+      includeHomeJsonLd={locale === 'en'}
       structuredData={[
         buildFaqPageSchema(getLocalizedHomeFaqs(locale)),
         buildBreadcrumbJsonLd(AIMBOT_BREADCRUMB, locale),

@@ -92,6 +92,29 @@ const cases: RedirectCase[] = [
     expectRedirect: false,
   },
   {
+    name: '/de without trailing slash redirects to /de/',
+    url: `${CANONICAL_ORIGIN}/de`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/de/`,
+  },
+  {
+    name: '/blog trailing slash redirects to canonical',
+    url: `${CANONICAL_ORIGIN}/blog/`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/blog`,
+  },
+  {
+    name: '/de/blog trailing slash redirects to canonical',
+    url: `${CANONICAL_ORIGIN}/de/blog/`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/de/blog`,
+  },
+  {
+    name: '/blog without trailing slash is canonical',
+    url: `${CANONICAL_ORIGIN}/blog`,
+    expectRedirect: false,
+  },
+  {
     name: '/en/sitemap.xml strips to /sitemap.xml',
     url: `${CANONICAL_ORIGIN}/en/sitemap.xml`,
     expectRedirect: true,
