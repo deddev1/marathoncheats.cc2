@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
+import { CHECKOUT_URL } from '../content/checkout';
 
 export function StickyBuyBar() {
   const [visible, setVisible] = useState(false);
@@ -14,7 +14,7 @@ export function StickyBuyBar() {
   return (
     <div className="sticky-buy-bar" data-visible={visible ? 'true' : 'false'} aria-hidden={!visible}>
       <a
-        href={ZADEYO_CHECKOUT_URL}
+        href={CHECKOUT_URL}
         className="sticky-buy-bar__button btn-buy"
         target="_blank"
         rel="noopener noreferrer"

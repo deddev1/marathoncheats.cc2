@@ -8,7 +8,7 @@ export const LICENSE_INCLUDES = [
   { label: 'Recoil control', desc: 'reduces weapon recoil while firing' },
   { label: 'FOV circle', desc: 'optional on-screen aimbot radius overlay' },
   { label: 'Cloud-DMA option', desc: 'hardware-separated setup available on request' },
-  { label: 'Auto-updated loader', desc: 'download newest build from your Zadeyo order page' },
+  { label: 'Auto-updated loader', desc: 'download newest build from your order page' },
   { label: 'Discord community', desc: '24/7 support for setup, patches, and HWID transfers' },
 ] as const;
 

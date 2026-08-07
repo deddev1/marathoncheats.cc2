@@ -94,7 +94,7 @@ const IMAGE_MAP = [
   },
   {
     url: `${IGN_BASE}/photo/default/rook-cinematic-4-1772569946937_axur.1400.jpg`,
-    output: 'public/blog-zadeyo-comparison.webp',
+    output: 'public/blog-checkout-guide.webp',
     width: 1600,
   },
   {

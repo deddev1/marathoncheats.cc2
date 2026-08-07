@@ -71,7 +71,7 @@ const EXPLORER_FEATURES: ExplorerFeature[] = [
     title: 'External Loader',
     shortDesc: 'Runs outside Marathon — not injected.',
     fullDesc:
-      'The cheat runs as a separate external process on Windows 10 and 11 with minimal FPS impact. Download updates from your Zadeyo order page.',
+      'The cheat runs as a separate external process on Windows 10 and 11 with minimal FPS impact. Download updates from your order page.',
     image: SITE_IMAGES.external,
     imageAlt: getImageSeoByPath(SITE_IMAGES.external)!.alt,
   },

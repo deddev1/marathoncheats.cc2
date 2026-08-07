@@ -10,7 +10,6 @@ import { ChoosePlanSection } from '../components/ChoosePlanSection';
 import { RaidPlaybookSection } from '../components/RaidPlaybookSection';
 import { Integrations } from '../components/Integrations';
 import { Testimonials } from '../components/Testimonials';
-import { SupportBanner } from '../components/SupportBanner';
 import { HomeFaqSection } from '../components/HomeFaqSection';
 import { scrollToSectionById } from '../utils/scrollToSection';
 
@@ -42,7 +41,6 @@ export function HomePage() {
       <Integrations />
       <Testimonials />
       <HomeFaqSection />
-      <SupportBanner />
     </>
   );
 }
