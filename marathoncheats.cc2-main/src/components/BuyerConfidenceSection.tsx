@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { PricingSelector } from './PricingSelector';
-
-import { SUPPORT_URL } from '../content/support';
+import { useLocalizedPath } from '../seo/useSeoLocale';
 
 const TRUST_POINTS = [
   {
@@ -47,6 +46,9 @@ const TRUST_POINTS = [
 ] as const;
 
 export function BuyerConfidenceSection() {
+  const storePath = useLocalizedPath('/marathoncheats-buy');
+  const storeFaqPath = `${storePath}#faq`;
+
   return (
     <section id="pricing" className="nav-anchor-target buyer-confidence-section" aria-labelledby="pricing-heading">
       <div className="section-shell">
@@ -76,11 +78,11 @@ export function BuyerConfidenceSection() {
 
             <p className="buyer-confidence-footer">
               Questions before you buy?{' '}
-              <a href={SUPPORT_URL} target="_blank" rel="noopener noreferrer" className="feature-preview-card__link">
-                Support →
-              </a>
+              <Link to={storeFaqPath} className="feature-preview-card__link">
+                Read the FAQ →
+              </Link>
               {' · '}
-              <Link to="/marathoncheats-buy" className="feature-preview-card__link">
+              <Link to={storePath} className="feature-preview-card__link">
                 See full feature list →
               </Link>
             </p>

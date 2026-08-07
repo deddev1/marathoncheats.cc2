@@ -10,7 +10,6 @@ export const NAV_SECTION_IDS = [
   'compatibility',
   'reviews',
   'faq',
-  'support',
 ] as const;
 
 export type NavSectionId = (typeof NAV_SECTION_IDS)[number];

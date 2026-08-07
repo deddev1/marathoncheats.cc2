@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { SUPPORT_URL } from '../content/support';
 import { SiteLogo } from './SiteLogo';
 import { useLocalizedPath } from '../seo/useSeoLocale';
 
@@ -23,16 +22,13 @@ export function Footer() {
     { label: 'All cheat guides', to: blogPath },
   ] as const;
 
-  const HELP_LINKS: Array<
-    | { label: string; to: string }
-    | { label: string; href: string; external?: boolean }
-  > = [
+  const HELP_LINKS = [
     { label: 'Marathon cheat FAQ', href: `${storePath}#faq` },
-    { label: 'Support', href: SUPPORT_URL, external: true },
     { label: 'Terms of service', to: termsPath },
     { label: 'Privacy policy', to: privacyPath },
     { label: 'Refund policy', to: refundPath },
   ] as const;
+
   return (
     <footer className="site-footer">
       <div className="site-footer__inner">
@@ -42,25 +38,17 @@ export function Footer() {
               <SiteLogo height={30} className="site-logo--footer" />
             </Link>
             <p className="site-footer__brand-desc">
-              Marathon aimbot, ESP, and wallhack for Bungie&apos;s extraction shooter on Steam. External loader with patch updates and Discord support.
+              Marathon aimbot, ESP, and wallhack for Bungie&apos;s extraction shooter on Steam. External loader with patch updates and Discord community.
             </p>
-            <a
-              href={SUPPORT_URL}
-              className="site-footer__link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Support
-            </a>
           </div>
 
           <div>
             <p className="site-footer__col-title">Explore</p>
             {EXPLORE_LINKS.map(link => (
-                <Link key={link.label} to={link.to} className="site-footer__link">
-                  {link.label}
-                </Link>
-              ))}
+              <Link key={link.label} to={link.to} className="site-footer__link">
+                {link.label}
+              </Link>
+            ))}
           </div>
 
           <div>
@@ -71,12 +59,7 @@ export function Footer() {
                   {link.label}
                 </Link>
               ) : (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  className="site-footer__link"
-                  {...('external' in link && link.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
+                <a key={link.label} href={link.href} className="site-footer__link">
                   {link.label}
                 </a>
               ),

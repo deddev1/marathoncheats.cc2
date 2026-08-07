@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { FeatureShowcaseGallery } from './FeatureShowcaseGallery';
 import { CHECKOUT_URL } from '../content/checkout';
-import { SUPPORT_URL } from '../content/support';
+import { DISCORD_INVITE_URL } from '../content/discord';
 import { SITE_IMAGES } from '../content/siteImages';
 import { SeoImage } from './SeoImage';
 
@@ -62,14 +62,14 @@ const FEATURE_PREVIEW_CARDS = [
     external: true,
   },
   {
-    tag: 'Support',
-    title: 'Help when you need it',
+    tag: 'Community',
+    title: 'Discord help channel',
     description:
-      'Discord support for setup, loader issues, HWID transfers, and post-patch updates — fast responses from real staff.',
+      'Join our Discord for setup tips, loader issues, HWID transfers, and post-patch updates from the community and staff.',
     image: SITE_IMAGES.support,
     imageAlt: 'Marathon external cheat loader interface',
-    href: SUPPORT_URL,
-    linkLabel: 'Support',
+    href: DISCORD_INVITE_URL,
+    linkLabel: 'Join Discord',
     external: true,
   },
 ] as const;
