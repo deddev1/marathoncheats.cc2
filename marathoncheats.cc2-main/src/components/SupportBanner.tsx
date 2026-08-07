@@ -1,8 +1,6 @@
 import { AnimatedSection } from './AnimatedSection';
 
-import { ZADEYO_SUPPORT_URL } from '../content/support';
-
-const SUPPORT_URL = ZADEYO_SUPPORT_URL;
+import { SUPPORT_URL } from '../content/support';
 
 function SparkleIcon() {
   return (

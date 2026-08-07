@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ZADEYO_SUPPORT_URL } from '../content/support';
+import { SUPPORT_URL } from '../content/support';
 import { SiteLogo } from './SiteLogo';
 import { useLocalizedPath } from '../seo/useSeoLocale';
 
@@ -28,7 +28,7 @@ export function Footer() {
     | { label: string; href: string; external?: boolean }
   > = [
     { label: 'Marathon cheat FAQ', href: `${storePath}#faq` },
-    { label: 'Support', href: ZADEYO_SUPPORT_URL, external: true },
+    { label: 'Support', href: SUPPORT_URL, external: true },
     { label: 'Terms of service', to: termsPath },
     { label: 'Privacy policy', to: privacyPath },
     { label: 'Refund policy', to: refundPath },
@@ -45,7 +45,7 @@ export function Footer() {
               Marathon aimbot, ESP, and wallhack for Bungie&apos;s extraction shooter on Steam. External loader with patch updates and Discord support.
             </p>
             <a
-              href={ZADEYO_SUPPORT_URL}
+              href={SUPPORT_URL}
               className="site-footer__link"
               target="_blank"
               rel="noopener noreferrer"

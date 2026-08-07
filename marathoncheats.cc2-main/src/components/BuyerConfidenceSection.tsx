@@ -2,14 +2,12 @@ import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { PricingSelector } from './PricingSelector';
 
-import { ZADEYO_SUPPORT_URL } from '../content/support';
-
-const SUPPORT_URL = ZADEYO_SUPPORT_URL;
+import { SUPPORT_URL } from '../content/support';
 
 const TRUST_POINTS = [
   {
     title: 'Instant delivery',
-    description: 'Loader link and setup instructions on your Zadeyo order page right after checkout.',
+    description: 'Loader link and setup instructions on your order page right after checkout.',
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
         <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />

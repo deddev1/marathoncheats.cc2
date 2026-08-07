@@ -4,14 +4,14 @@ import { LANGUAGES } from '../i18n/languages';
 import { useI18n } from '../i18n/useI18n';
 import { useScrollSpy, type NavSectionId } from '../hooks/useScrollSpy';
 import { scrollToSectionById } from '../utils/scrollToSection';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
+import { CHECKOUT_URL } from '../content/checkout';
 import { SiteLogo } from './SiteLogo';
 import { LanguageFlag } from './LanguageFlag';
 import { parseLocalePath } from '../seo/localePaths';
 import { useSeoLocale } from '../seo/useSeoLocale';
 
 const MOBILE_MQ = '(max-width: 1024px)';
-const BUY_URL = ZADEYO_CHECKOUT_URL;
+const BUY_URL = CHECKOUT_URL;
 
 function LangChevron() {
   return (

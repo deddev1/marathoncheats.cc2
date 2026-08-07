@@ -1,9 +1,7 @@
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { PRE_PURCHASE_CHECKLIST } from '../content/licenseIncludes';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
-
-const CHECKOUT_URL = ZADEYO_CHECKOUT_URL;
+import { CHECKOUT_URL } from '../content/checkout';
 
 const PLAN_STEPS = [
   {
@@ -50,7 +48,7 @@ const PLAN_STEPS = [
     title: 'Buy and set up',
     items: [
       {
-        label: 'Checkout on Zadeyo',
+        label: 'Checkout',
         desc: 'Complete purchase and get your loader link plus setup video on your order page instantly.',
         href: CHECKOUT_URL,
         external: true,
@@ -126,7 +124,7 @@ export function ChoosePlanSection() {
                 How to choose your Marathon cheat plan
               </h2>
               <p className="choose-plan-header__lead">
-                Pick what matters most for your raids, confirm the monthly plan fits your setup, then checkout on Zadeyo for instant loader access.
+                Pick what matters most for your raids, confirm the monthly plan fits your setup, then checkout for instant loader access.
               </p>
             </header>
 
@@ -148,7 +146,7 @@ export function ChoosePlanSection() {
               </ul>
               <div className="choose-plan-checklist__actions">
                 <a
-                  href={ZADEYO_CHECKOUT_URL}
+                  href={CHECKOUT_URL}
                   className="btn-primary btn-buy"
                   target="_blank"
                   rel="noopener noreferrer"

@@ -1,2 +1,2 @@
-/** Customer support contact — Zadeyo help desk for orders, setup, and billing. */
-export const ZADEYO_SUPPORT_URL = 'https://zadeyo.com/support';
+/** Customer support contact for orders, setup, and billing. */
+export const SUPPORT_URL = 'https://zadeyo.com/support';
