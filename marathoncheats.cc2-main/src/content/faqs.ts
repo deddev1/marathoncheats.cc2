@@ -23,7 +23,7 @@ export const HOME_FAQS: FaqEntry[] = [
   },
   {
     q: 'How do Marathon cheat patch updates work?',
-    a: 'After Bungie releases a Marathon update, download the newest loader from your Zadeyo order page. Updated builds are usually posted within hours, and Discord support can help if your overlay stops working.',
+    a: 'After Bungie releases a Marathon update, download the newest loader from your order page. Updated builds are usually posted within hours, and Discord support can help if your overlay stops working.',
   },
 ];
 
@@ -31,7 +31,7 @@ export const HOME_FAQS: FaqEntry[] = [
 export const STORE_FAQS: FaqEntry[] = [
   {
     q: 'How do I download Marathon Cheats after purchase?',
-    a: 'Complete checkout on Zadeyo, then open your order page for the loader download link, written setup guide, and setup video. Most users are running in under a minute.',
+    a: 'Complete checkout, then open your order page for the loader download link, written setup guide, and setup video. Most users are running in under a minute.',
   },
   {
     q: 'What Marathon cheat features are included?',
@@ -43,7 +43,7 @@ export const STORE_FAQS: FaqEntry[] = [
   },
   {
     q: 'Is Marathon Cheats difficult to set up?',
-    a: 'No. Setup is quick — you get a step-by-step guide and video on your Zadeyo order page. Most users are running in under a minute. Join Discord if you need help.',
+    a: 'No. Setup is quick — you get a step-by-step guide and video on your order page. Most users are running in under a minute. Join Discord if you need help.',
   },
   {
     q: 'Will Marathon Cheats affect FPS or performance?',
@@ -51,11 +51,11 @@ export const STORE_FAQS: FaqEntry[] = [
   },
   {
     q: 'What payment methods do you accept?',
-    a: 'Checkout on Zadeyo accepts major credit and debit cards, crypto, and other payment options shown at purchase.',
+    a: 'Checkout accepts major credit and debit cards, crypto, and other payment options shown at purchase.',
   },
   {
     q: 'Marathon Cheats stopped working after a game update. What should I do?',
-    a: 'After every Marathon patch, download the latest loader from your Zadeyo order page. Updated builds are usually posted within hours of a new game version.',
+    a: 'After every Marathon patch, download the latest loader from your order page. Updated builds are usually posted within hours of a new game version.',
   },
   {
     q: 'The overlay does not appear. What do I do?',
@@ -63,6 +63,6 @@ export const STORE_FAQS: FaqEntry[] = [
   },
   {
     q: 'How do I purchase Marathon Cheats?',
-    a: 'Click Buy on this page to open checkout, or visit the Zadeyo Marathon product page. Choose Monthly ($40) or Lifetime ($150), then use the loader link and setup instructions on your order page.',
+    a: 'Click Buy on this page to open checkout, or visit the Marathon product page. Choose Monthly ($40) or Lifetime ($150), then use the loader link and setup instructions on your order page.',
   },
 ];

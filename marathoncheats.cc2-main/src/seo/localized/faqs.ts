@@ -20,7 +20,7 @@ const HOME_FAQS_EN: FaqEntry[] = [
   },
   {
     q: 'How do Marathon cheat patch updates work?',
-    a: 'After Bungie releases a Marathon update, download the newest loader from your Zadeyo order page. Updated builds are usually posted within hours, and Discord support can help if your overlay stops working.',
+    a: 'After Bungie releases a Marathon update, download the newest loader from your order page. Updated builds are usually posted within hours, and Discord support can help if your overlay stops working.',
   },
 ];
 
@@ -46,7 +46,7 @@ export const LOCALIZED_HOME_FAQS: Record<SeoLocaleCode, FaqEntry[]> = {
     },
     {
       q: 'Wie funktionieren Patch-Updates für Marathon Cheats?',
-      a: 'Nach einem Marathon-Update von Bungie laden Sie den neuesten Loader von Ihrer Zadeyo-Bestellseite herunter. Aktualisierte Builds erscheinen meist innerhalb weniger Stunden; Discord-Support hilft bei Problemen.',
+      a: 'Nach einem Marathon-Update von Bungie laden Sie den neuesten Loader von Ihrer Bestellseite herunter. Aktualisierte Builds erscheinen meist innerhalb weniger Stunden; Discord-Support hilft bei Problemen.',
     },
   ],
   fr: HOME_FAQS_EN,

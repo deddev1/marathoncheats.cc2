@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { FeatureShowcaseGallery } from './FeatureShowcaseGallery';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
-import { ZADEYO_SUPPORT_URL } from '../content/support';
+import { CHECKOUT_URL } from '../content/checkout';
+import { DISCORD_INVITE_URL } from '../content/discord';
 import { SITE_IMAGES } from '../content/siteImages';
 import { SeoImage } from './SeoImage';
 
@@ -57,19 +57,19 @@ const FEATURE_PREVIEW_CARDS = [
       'Highlight loot containers, resources, and high-value items through walls so you extract with better gear every run.',
     image: SITE_IMAGES.loot,
     imageAlt: 'Marathon loot ESP highlighting valuable items',
-    href: ZADEYO_CHECKOUT_URL,
+    href: CHECKOUT_URL,
     linkLabel: 'View pricing',
     external: true,
   },
   {
-    tag: 'Support',
-    title: 'Help when you need it',
+    tag: 'Community',
+    title: 'Discord help channel',
     description:
-      'Discord support for setup, loader issues, HWID transfers, and post-patch updates — fast responses from real staff.',
+      'Join our Discord for setup tips, loader issues, HWID transfers, and post-patch updates from the community and staff.',
     image: SITE_IMAGES.support,
     imageAlt: 'Marathon external cheat loader interface',
-    href: ZADEYO_SUPPORT_URL,
-    linkLabel: 'Support',
+    href: DISCORD_INVITE_URL,
+    linkLabel: 'Join Discord',
     external: true,
   },
 ] as const;

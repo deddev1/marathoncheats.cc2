@@ -26,7 +26,7 @@ const checklist = [
   { label: 'Recoil Control', desc: 'reduces weapon recoil while firing' },
   { label: 'FOV Circle', desc: 'optional on-screen aimbot radius' },
   { label: 'Cloud-DMA Option', desc: 'hardware-separated setup available' },
-  { label: 'Auto-updated loader', desc: 'from your Zadeyo order page' },
+  { label: 'Auto-updated loader', desc: 'from your order page' },
   { label: 'Discord community + 24/7 support', desc: 'always online' },
 ];
 

@@ -18,7 +18,7 @@ export function StoreFaqSection({ faqs }: StoreFaqSectionProps) {
             <p className="compatibility-info-card__body">
               Marathon on Steam uses <strong>BattlEye (BE)</strong> anti-cheat. Marathon Cheats is an{' '}
               <strong>external cheat loader</strong> — it runs outside the game process rather than injecting into memory.
-              You must <strong>update your loader</strong> from your Zadeyo order page after every Marathon patch.
+              You must <strong>update your loader</strong> from your order page after every Marathon patch.
               Ban risk always exists; we recommend playing responsibly and avoiding behavior that draws manual reports.
             </p>
           </div>

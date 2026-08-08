@@ -348,7 +348,6 @@ body::-webkit-scrollbar {
 }
 
 .btn-primary.btn-buy,
-a.btn-primary[href*='zadeyo'].btn-buy,
 .pricing-selector__buy.btn-buy {
   min-height: 52px;
   padding-inline: 32px;
@@ -604,7 +603,6 @@ button:focus-visible {
   font-size: 1.0625rem;
 }
 
-a.btn-primary[href*='zadeyo'],
 a.btn-primary[href='/marathoncheats-buy'],
 a.btn-primary[href*='marathoncheats-buy'] {
   min-height: 50px;

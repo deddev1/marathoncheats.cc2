@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from './AnimatedSection';
 import { AimbotSectionBreadcrumb } from './SectionBreadcrumb';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
+import { CHECKOUT_URL } from '../content/checkout';
 import { SITE_IMAGES } from '../content/siteImages';
 import { SeoImage } from './SeoImage';
 
@@ -455,7 +455,7 @@ export function FeaturesGrid() {  return (
                 </Link>
                 {' · '}
                 <a
-                  href={ZADEYO_CHECKOUT_URL}
+                  href={CHECKOUT_URL}
                   target="_blank"
                   rel="noopener noreferrer"
                   style={{ color: 'var(--text-secondary)', textDecoration: 'none' }}

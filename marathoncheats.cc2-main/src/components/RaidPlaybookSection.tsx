@@ -16,7 +16,7 @@ const PLAYBOOK_GROUPS: PlaybookGroup[] = [
     items: [
       {
         bold: 'latest loader',
-        text: ' — download the newest build from your Zadeyo order page after every Marathon patch.',
+        text: ' — download the newest build from your order page after every Marathon patch.',
       },
       {
         bold: 'Windows settings',

@@ -1,4 +1,4 @@
-import { ZADEYO_CHECKOUT_URL } from './checkout';
+import { CHECKOUT_URL } from './checkout';
 
 export type PricingPlanId = 'monthly' | 'lifetime';
 
@@ -20,7 +20,7 @@ export const PRICING_PLANS: Record<PricingPlanId, PricingPlan> = {
     price: 40,
     priceLabel: '$40',
     durationLabel: '31 days',
-    checkoutUrl: ZADEYO_CHECKOUT_URL,
+    checkoutUrl: CHECKOUT_URL,
   },
   lifetime: {
     id: 'lifetime',
@@ -29,7 +29,7 @@ export const PRICING_PLANS: Record<PricingPlanId, PricingPlan> = {
     price: 150,
     priceLabel: '$150',
     durationLabel: 'Lifetime',
-    checkoutUrl: ZADEYO_CHECKOUT_URL,
+    checkoutUrl: CHECKOUT_URL,
   },
 };
 

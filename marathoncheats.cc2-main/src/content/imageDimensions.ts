@@ -11,6 +11,7 @@ export type ImageDimensionEntry = {
 export const IMAGE_DIMENSIONS: Record<string, ImageDimensionEntry> = {
   '/blog-aimbot-guide.webp': { width: 1400, height: 788 },
   '/blog-bungie-anticheat.webp': { width: 1400, height: 788 },
+  '/blog-checkout-guide.webp': { width: 1400, height: 788 },
   '/blog-esp-guide.webp': { width: 1400, height: 788 },
   '/blog-external-cheat.webp': { width: 1400, height: 788 },
   '/blog-hwid-spoofer.webp': { width: 1400, height: 788 },
@@ -24,7 +25,6 @@ export const IMAGE_DIMENSIONS: Record<string, ImageDimensionEntry> = {
   '/blog-recoil-control.webp': { width: 1400, height: 788 },
   '/blog-sony-bans.webp': { width: 1400, height: 788 },
   '/blog-sternclient-comparison.webp': { width: 1400, height: 788 },
-  '/blog-zadeyo-comparison.webp': { width: 1400, height: 788 },
   '/image-44fb6aa2-4123-47aa-ba38-e2a9f0bdaee6.png': { width: 1400, height: 788, webpPath: '/image-44fb6aa2-4123-47aa-ba38-e2a9f0bdaee6.webp' },
   '/image-44fb6aa2-4123-47aa-ba38-e2a9f0bdaee6.webp': { width: 1400, height: 788 },
   '/images/marathon-feature-demo-thumbnail.webp': { width: 1280, height: 720 },

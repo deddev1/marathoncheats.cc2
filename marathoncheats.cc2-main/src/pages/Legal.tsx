@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { AnimatedSection } from '../components/AnimatedSection';
-import { ZADEYO_CHECKOUT_URL } from '../content/checkout';
+import { CHECKOUT_URL } from '../content/checkout';
 import { LEGAL_PAGE_HEADINGS } from '../seo/pageHeadings';
 
 type LegalPageKey = 'terms' | 'privacy' | 'refund';
@@ -209,7 +209,7 @@ function LegalDocument({ page }: { page: LegalPageKey }) {
           <AnimatedSection>
             <div style={{ marginTop: 40, display: 'flex', flexWrap: 'wrap', gap: 12 }}>
               <a
-                href={ZADEYO_CHECKOUT_URL}
+                href={CHECKOUT_URL}
                 className="btn-primary"
                 style={{ fontSize: '0.875rem' }}
                 target="_blank"
