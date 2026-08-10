@@ -215,14 +215,20 @@ const translations: Record<string, Record<string, string>> = {
   },
 };
 
+function resolveUrlLang(urlLocale: ReturnType<typeof parseLocalePath>['locale']): string | null {
+  const fromUrl = seoLocaleToI18n(urlLocale);
+  return fromUrl && translations[fromUrl] ? fromUrl : null;
+}
+
 export function I18nProvider({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { locale: urlLocale, path: appPath } = parseLocalePath(location.pathname);
+  const urlLang = resolveUrlLang(urlLocale);
 
   const [lang, setLangState] = useState(() => {
-    const fromUrl = seoLocaleToI18n(urlLocale);
-    if (translations[fromUrl]) return fromUrl;
+    const fromUrl = resolveUrlLang(urlLocale);
+    if (fromUrl) return fromUrl;
     const stored = localStorage.getItem('lang');
     if (stored && translations[stored]) return stored;
     const browserLang = navigator.language.split('-')[0];
@@ -230,13 +236,19 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     return 'en';
   });
 
-  useEffect(() => {
-    const fromUrl = seoLocaleToI18n(urlLocale);
-    if (fromUrl && translations[fromUrl] && fromUrl !== lang) {
-      setLangState(fromUrl);
-      localStorage.setItem('lang', fromUrl);
+  const [prevUrlLang, setPrevUrlLang] = useState(urlLang);
+  if (urlLang !== prevUrlLang) {
+    setPrevUrlLang(urlLang);
+    if (urlLang && urlLang !== lang) {
+      setLangState(urlLang);
     }
-  }, [urlLocale, lang]);
+  }
+
+  useEffect(() => {
+    if (urlLang) {
+      localStorage.setItem('lang', urlLang);
+    }
+  }, [urlLang]);
 
   const setLang = (newLang: string) => {
     setLangState(newLang);
