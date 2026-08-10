@@ -281,6 +281,9 @@ export default {
         if (seoAsset) {
           return seoAsset;
         }
+
+        // Never fall back to SPA HTML for robots/sitemap URLs — crawlers need XML or 404.
+        return notFoundResponse(staticAssetPath);
       }
 
       return serveStaticAsset(request, env, staticAssetPath);
@@ -295,6 +298,10 @@ export default {
     const seoAsset = await serveSeoAsset(request, env, pathname);
     if (seoAsset) {
       return seoAsset;
+    }
+
+    if (SEO_ASSET_PATHS.has(pathname)) {
+      return notFoundResponse(pathname);
     }
 
     const assetResponse = await env.ASSETS.fetch(request);
