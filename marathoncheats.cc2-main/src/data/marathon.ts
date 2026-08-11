@@ -25,15 +25,15 @@ export const marathonImages = {
 	product: [
 		{ src: '/gallery-1.webp', alt: 'marathon cheats in-game ESP' },
 		{ src: '/gallery-2.webp', alt: 'marathon cheats in-game aimbot' },
-		{ src: '/gallery-3.webp', alt: 'marathon cheats wallhack overlay' },
+		{ src: '/gallery-3.webp', alt: 'marathon cheats items ESP overlay' },
 		{ src: '/gallery-1.webp', alt: 'marathon cheats in-game ESP' },
 		{ src: '/gallery-2.webp', alt: 'marathon cheats in-game aimbot' },
-		{ src: '/gallery-3.webp', alt: 'marathon cheats wallhack overlay' },
+		{ src: '/gallery-3.webp', alt: 'marathon cheats items ESP overlay' },
 	],
 	gallery: [
 		{ src: '/gallery-1.webp', alt: 'marathon cheats in-game ESP', featured: true },
 		{ src: '/gallery-2.webp', alt: 'marathon cheats in-game aimbot' },
-		{ src: '/gallery-3.webp', alt: 'marathon cheats wallhack overlay' },
+		{ src: '/gallery-3.webp', alt: 'marathon cheats items ESP overlay' },
 		{ src: '/gallery-1.webp', alt: 'marathon cheats in-game ESP' },
 		{ src: '/gallery-2.webp', alt: 'marathon cheats in-game aimbot' },
 	],
