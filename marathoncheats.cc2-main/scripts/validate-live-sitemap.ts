@@ -95,6 +95,10 @@ async function main() {
 
   const { body: indexXml } = await fetchText(`${SITEMAP_INDEX_URL}`);
   const childSitemaps = parseSitemapLocs(indexXml);
+  if (childSitemaps.length !== 1 || childSitemaps[0] !== SITEMAP_URL) {
+    fail(`sitemap-index.xml must list only ${SITEMAP_URL} (found: ${childSitemaps.join(', ') || 'none'}).`);
+  }
+
   for (const child of childSitemaps) {
     const { response, body } = await fetchText(child);
     if (!response.ok) {

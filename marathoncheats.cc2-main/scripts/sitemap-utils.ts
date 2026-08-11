@@ -150,7 +150,9 @@ export function readSitemapFile() {
 
 export function renderSitemapIndexXml(buildDate = new Date()) {
   const lastmod = formatW3cDate(buildDate);
-  const sitemaps = [SITEMAP_URL, VIDEO_SITEMAP_URL, IMAGE_SITEMAP_URL];
+  // Keep the index focused on the primary URL sitemap so GSC fetch status stays clean.
+  // Video/image sitemaps remain available at their own URLs for optional submission.
+  const sitemaps = [SITEMAP_URL];
   const body = sitemaps
     .map(
       loc =>

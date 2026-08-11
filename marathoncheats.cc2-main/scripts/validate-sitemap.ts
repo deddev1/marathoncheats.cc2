@@ -120,8 +120,17 @@ if (!robots.includes(`Sitemap: ${SITEMAP_INDEX_URL}`)) {
   fail(`robots.txt must reference ${SITEMAP_INDEX_URL}`);
 }
 
-if (!robots.includes(`Sitemap: ${SITEMAP_URL}`)) {
-  fail(`robots.txt must reference ${SITEMAP_URL}`);
+const sitemapLines = robots
+  .split('\n')
+  .map(line => line.trim())
+  .filter(line => line.toLowerCase().startsWith('sitemap:'));
+
+if (sitemapLines.length !== 1) {
+  fail(`robots.txt must declare exactly one Sitemap line (found ${sitemapLines.length}).`);
+}
+
+if (sitemapLines[0] !== `Sitemap: ${SITEMAP_INDEX_URL}`) {
+  fail(`robots.txt Sitemap line must be exactly: Sitemap: ${SITEMAP_INDEX_URL}`);
 }
 
 expectedEntries.forEach(entry => {
