@@ -157,10 +157,6 @@ export function buildCanonicalDestination(pathname: string, search = '') {
     return new URL(`/${search}`, CANONICAL_ORIGIN);
   }
 
-  if (/^\/[a-z]{2}(-[a-z]{2})?\/$/.test(pathname)) {
-    return new URL(`${pathname}${search}`, CANONICAL_ORIGIN);
-  }
-
   const normalizedPath = pathname.replace(/\/$/, '') || '/';
   return new URL(`${normalizedPath}${search}`, CANONICAL_ORIGIN);
 }
@@ -224,11 +220,21 @@ export function buildRequestRedirect(request: Request): Response | null {
     destinationPath = new URL(seoTrailingSlashRedirect).pathname;
   }
 
+  // Match Cloudflare html_handling=drop-trailing-slash with a 301 (not a soft 307 from Assets).
+  const needsPageTrailingSlashRedirect = rawPathname.endsWith('/') && rawPathname !== '/';
+
   const needsVideoRedirect = Boolean(embedPath);
   const needsLocaleRedirect = Boolean(localeRedirect);
   const needsSeoTrailingSlashRedirect = Boolean(seoTrailingSlashRedirect);
 
-  if (!needsHttpsRedirect && !needsWwwRedirect && !needsVideoRedirect && !needsLocaleRedirect && !needsSeoTrailingSlashRedirect) {
+  if (
+    !needsHttpsRedirect &&
+    !needsWwwRedirect &&
+    !needsVideoRedirect &&
+    !needsLocaleRedirect &&
+    !needsSeoTrailingSlashRedirect &&
+    !needsPageTrailingSlashRedirect
+  ) {
     return null;
   }
 

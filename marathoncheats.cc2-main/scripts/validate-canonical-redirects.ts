@@ -87,9 +87,15 @@ const cases: RedirectCase[] = [
     expectedLocation: `${CANONICAL_ORIGIN}/?ref=test`,
   },
   {
-    name: 'localized german homepage is canonical',
-    url: `${CANONICAL_ORIGIN}/de/`,
+    name: 'localized german homepage without trailing slash is canonical',
+    url: `${CANONICAL_ORIGIN}/de`,
     expectRedirect: false,
+  },
+  {
+    name: 'localized german homepage trailing slash redirects to /de',
+    url: `${CANONICAL_ORIGIN}/de/`,
+    expectRedirect: true,
+    expectedLocation: `${CANONICAL_ORIGIN}/de`,
   },
   {
     name: '/en/sitemap.xml strips to /sitemap.xml',
@@ -203,8 +209,8 @@ if (buildLocalizedCanonicalUrl('en', '/blog') !== `${CANONICAL_ORIGIN}/blog`) {
   errors.push(`English blog canonical must not end with a trailing slash: ${buildLocalizedCanonicalUrl('en', '/blog')}`);
 }
 
-if (buildLocalizedCanonicalUrl('de', '/') !== `${CANONICAL_ORIGIN}/de/`) {
-  errors.push(`German homepage canonical must use /de/: ${buildLocalizedCanonicalUrl('de', '/')}`);
+if (buildLocalizedCanonicalUrl('de', '/') !== `${CANONICAL_ORIGIN}/de`) {
+  errors.push(`German homepage canonical must use /de (no trailing slash): ${buildLocalizedCanonicalUrl('de', '/')}`);
 }
 
 if (errors.length > 0) {
