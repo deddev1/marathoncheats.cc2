@@ -101,12 +101,12 @@ const useHomeHero = heroImage === marathonImages.hero;
 				{
 					useHomeHero ? (
 						<picture>
-							<source media="(max-width: 760px)" srcset={heroPreloadSrc} type="image/webp" />
+							<source media="(max-width: 760px)" srcset={heroPreloadSrc} type="image/png" />
 							<source
 								media="(min-width: 761px)"
 								srcset={heroSrcSet}
 								sizes={heroSizes}
-								type="image/webp"
+								type="image/png"
 							/>
 							<img
 								src={heroPreloadSrc}

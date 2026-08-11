@@ -33,26 +33,26 @@ export function contentSrcSet(baseSrc: string): string | undefined {
 }
 
 /**
- * Homepage hero — native 1024×409 (~2.5:1).
- * Prefer the PNG master (no lossy compression). WebP is lossless fallback only.
+ * Homepage hero — native 2120×742 (~2.86:1) Marathon banner.
+ * Prefer the PNG master (no lossy compression). Do not point at WebP.
  */
 export const heroResponsive: ResponsiveWidth[] = [
-	{ src: '/images/marathon-cheats-hero-full.png', width: 1024 },
+	{ src: '/hero.png', width: 2120 },
 ];
 
 export const heroDesktopResponsive: ResponsiveWidth[] = heroResponsive;
 
 /** Uncompressed PNG master — do not point this at a lossy webp. */
-export const heroSrc = '/images/marathon-cheats-hero-full.png';
-export const heroSrcSet = `${heroSrc} 1024w`;
+export const heroSrc = '/hero.png';
+export const heroSrcSet = `${heroSrc} 2120w`;
 export const heroSizes = '100vw';
 
 /** LCP preload — PNG master. */
 export const heroPreloadSrc = heroSrc;
 
-/** Exact native dimensions (no zoom crop). */
-export const heroWidth = 1024;
-export const heroHeight = 409;
+/** Exact native dimensions (no zoom crop / no recompress). */
+export const heroWidth = 2120;
+export const heroHeight = 742;
 
 /** Responsive widths for below-fold content images. */
 export const contentWidths = [480, 960] as const;

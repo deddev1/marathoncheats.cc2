@@ -194,11 +194,8 @@ const chips = [
 	.hero {
 		--hero-pad-y: clamp(1rem, 2vw, 1.75rem);
 		--hero-stack: clamp(0.5rem, 1.1vw, 0.75rem);
-		/*
-		 * Bar is a bit shorter than the native 1024/409 (~2.5:1) art.
-		 * Image stays undistorted via object-fit: cover (crops edges, no squash).
-		 */
-		--hero-ratio: 3.15 / 1;
+		/* Native Marathon banner ratio 2120×742 — no artificial crop bar. */
+		--hero-ratio: 2120 / 742;
 		position: relative;
 		isolation: isolate;
 		display: grid;
@@ -228,8 +225,7 @@ const chips = [
 	.hero__media img {
 		/* Cover = keep proportions; crop top/bottom of the shorter bar */
 		object-fit: cover;
-		/* Prefer a bit higher in the frame so the USEC head stays in view */
-		object-position: right 28%;
+		object-position: right center;
 		image-rendering: auto;
 		transform: translateZ(0);
 		animation: hero-in 0.9s ease-out both;

@@ -2,7 +2,7 @@ import { siteConfig } from './site';
 
 /** Screenshots used across product pages — simple marathon cheats keyword alts. */
 export const marathonImages = {
-	hero: '/images/marathon-cheats-hero-full.png',
+	hero: '/hero.png',
 	espWallhack: '/images/marathon-cheats-wallhack.webp',
 	aimbotCombat: '/images/marathon-cheats-aimbot.webp',
 	aimbotSkeleton: '/images/marathon-cheats-aimbot-view.webp',

@@ -8,3 +8,8 @@
 
 # Legacy sitemap URL → primary index (GSC / old crawlers)
 /sitemap-index.xml /sitemap.xml 301
+
+# Legacy hero paths → uncompressed Marathon banner
+/images/marathon-cheats-hero-full.png /hero.png 301
+/images/marathon-cheats-hero.png /hero.png 301
+/marathon-banner.png /hero.png 301

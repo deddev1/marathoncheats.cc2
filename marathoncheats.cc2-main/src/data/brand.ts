@@ -25,8 +25,8 @@ export const brand = {
 	logoRasterWidth: 512,
 	logoRasterHeight: 512,
 	logoAlt: 'marathon cheats logo',
-	defaultOgImage: '/images/marathon-cheats-hero-full.png',
-	heroImage: '/images/marathon-cheats-hero-full.png',
+	defaultOgImage: '/hero.png',
+	heroImage: '/hero.png',
 
 	plans: [
 		{ id: 'monthly', label: 'Monthly', price: 40, duration: 'P30D' },
