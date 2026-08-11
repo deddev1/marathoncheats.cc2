@@ -176,7 +176,7 @@ if (softwareNode) {
 					rel="preload"
 					as="image"
 					href={lcpImage}
-					type="image/webp"
+					type={lcpImage.endsWith('.webp') ? 'image/webp' : 'image/png'}
 					fetchpriority="high"
 					media="(max-width: 760px)"
 				/>
@@ -188,7 +188,7 @@ if (softwareNode) {
 					rel="preload"
 					as="image"
 					href={lcpImageSrcSet.split(' ')[0]}
-					type="image/webp"
+					type={lcpImageSrcSet.includes('.webp') ? 'image/webp' : 'image/png'}
 					fetchpriority="high"
 					imagesrcset={lcpImageSrcSet}
 					imagesizes={lcpImageSizes}
