@@ -1,8 +1,7 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { IMAGE_SEO_REGISTRY } from '../src/content/imageSeo';
-import { ROBOTS_PATH } from './sitemap-utils';
-import { IMAGE_SITEMAP_URL, readImageSitemapFile } from './image-sitemap-utils';
+import { readImageSitemapFile } from './image-sitemap-utils';
 
 function fail(message: string): never {
   console.error(`Image sitemap validation failed. ${message}`);
@@ -37,10 +36,5 @@ IMAGE_SEO_REGISTRY.forEach(entry => {
     fail(`Image file missing on disk: ${entry.path}`);
   }
 });
-
-const robots = readFileSync(ROBOTS_PATH, 'utf8');
-if (!robots.includes(IMAGE_SITEMAP_URL)) {
-  fail(`robots.txt must reference ${IMAGE_SITEMAP_URL}`);
-}
 
 console.log(`Image sitemap validation passed for ${IMAGE_SEO_REGISTRY.length} images.`);

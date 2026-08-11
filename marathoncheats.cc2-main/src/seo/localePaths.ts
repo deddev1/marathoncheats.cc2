@@ -36,7 +36,10 @@ export function parseLocalePath(pathname: string): ParsedLocalePath {
   return { locale: DEFAULT_SEO_LOCALE, path: normalizeAppPath(raw) };
 }
 
-/** Build a localized pathname. English: `/`, `/blog`. Others: `/de/`, `/de/blog`. */
+/** Build a localized pathname. English: `/`, `/blog`. Others: `/de`, `/de/blog`.
+ * Locale homepages omit the trailing slash to match Cloudflare `drop-trailing-slash`
+ * (so sitemap/canonical URLs return 200 instead of redirecting).
+ */
 export function buildLocalizedPath(locale: SeoLocaleCode, appPath: string): string {
   const normalized = normalizeAppPath(appPath);
 
@@ -45,7 +48,7 @@ export function buildLocalizedPath(locale: SeoLocaleCode, appPath: string): stri
   }
 
   const segment = getSeoLocaleSegment(locale);
-  if (normalized === '/') return `/${segment}/`;
+  if (normalized === '/') return `/${segment}`;
   return `/${segment}${normalized}`;
 }
 

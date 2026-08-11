@@ -1,8 +1,6 @@
-import { readFileSync } from 'node:fs';
 import { SITE_VIDEOS, getVideoContentUrl, getVideoEmbedUrl, getVideoThumbnailUrl } from '../src/content/videos';
 import { VIDEO_DURATIONS_SECONDS } from '../src/content/videoMetadata.generated';
-import { ROBOTS_PATH } from './sitemap-utils';
-import { VIDEO_SITEMAP_URL, readVideoSitemapFile } from './video-sitemap-utils';
+import { readVideoSitemapFile } from './video-sitemap-utils';
 
 const errors: string[] = [];
 const buildDate = new Date();
@@ -13,7 +11,6 @@ function fail(message: string) {
 }
 
 const xml = readVideoSitemapFile();
-const robots = readFileSync(ROBOTS_PATH, 'utf8');
 
 if (!xml.startsWith('<?xml version="1.0" encoding="UTF-8"?>')) {
   fail('video-sitemap.xml must start with an XML declaration and UTF-8 encoding.');
@@ -47,10 +44,6 @@ if (contentLocMatches.length !== SITE_VIDEOS.length) {
 
 if (durationMatches.length !== SITE_VIDEOS.length) {
   fail('video-sitemap.xml must include video:duration for every video.');
-}
-
-if (!robots.includes(`Sitemap: ${VIDEO_SITEMAP_URL}`)) {
-  fail(`robots.txt must reference ${VIDEO_SITEMAP_URL}`);
 }
 
 SITE_VIDEOS.forEach(video => {

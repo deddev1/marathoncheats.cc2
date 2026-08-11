@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs';
-import { buildLocalizedCanonicalUrl } from '../src/seo/config';
+import { buildLocalizedCanonicalUrl, SITE_URL } from '../src/seo/config';
 import { SITEMAP_ROUTES } from '../src/seo/sitemapRoutes';
 import { SEO_LOCALES } from '../src/seo/locales';
 import {
@@ -106,8 +106,12 @@ SITEMAP_ROUTES.forEach(route => {
     const canonical = buildLocalizedCanonicalUrl(locale.code, route.path);
 
     if (route.path === '/') {
-      if (!canonical.endsWith('/')) {
-        fail(`Homepage canonical must keep a trailing slash: ${canonical}`);
+      if (locale.code === 'en') {
+        if (!canonical.endsWith('/')) {
+          fail(`English homepage canonical must keep a trailing slash: ${canonical}`);
+        }
+      } else if (canonical.endsWith('/')) {
+        fail(`Prefixed locale homepage must not end with a trailing slash (Cloudflare drops it): ${canonical}`);
       }
     } else if (canonical.endsWith('/')) {
       fail(`Non-homepage canonical must not end with a trailing slash: ${canonical}`);
@@ -120,14 +124,28 @@ if (!robots.includes(`Sitemap: ${SITEMAP_INDEX_URL}`)) {
   fail(`robots.txt must reference ${SITEMAP_INDEX_URL}`);
 }
 
-if (!robots.includes(`Sitemap: ${SITEMAP_URL}`)) {
-  fail(`robots.txt must reference ${SITEMAP_URL}`);
+const sitemapLines = robots
+  .split('\n')
+  .map(line => line.trim())
+  .filter(line => line.toLowerCase().startsWith('sitemap:'));
+
+if (sitemapLines.length !== 1) {
+  fail(`robots.txt must declare exactly one Sitemap line (found ${sitemapLines.length}).`);
+}
+
+if (sitemapLines[0] !== `Sitemap: ${SITEMAP_INDEX_URL}`) {
+  fail(`robots.txt Sitemap line must be exactly: Sitemap: ${SITEMAP_INDEX_URL}`);
 }
 
 expectedEntries.forEach(entry => {
   entry.alternates.forEach(alternate => {
     if (!xml.includes(`href="${alternate.href}"`)) {
       fail(`sitemap.xml is missing hreflang alternate ${alternate.hreflang}: ${alternate.href}`);
+    }
+
+    const isEnglishRoot = alternate.href === `${SITE_URL}/`;
+    if (!isEnglishRoot && alternate.href.endsWith('/')) {
+      fail(`hreflang alternate must not end with a trailing slash (redirects in production): ${alternate.href}`);
     }
   });
 });
