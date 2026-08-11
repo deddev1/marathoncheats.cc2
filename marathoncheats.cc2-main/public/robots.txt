@@ -1,8 +1,10 @@
 User-agent: *
 Allow: /
+Allow: /images/
+Disallow: /brand-studio/
+Disallow: /brand-studio
+Disallow: /__brand/
+Disallow: /__brand
 
-# Canonical sitemaps for Google Search Console
-Sitemap: https://marathoncheats.cc/sitemap-index.xml
+# Primary sitemap for Google Search Console — index covers EN, locale, and image sitemaps.
 Sitemap: https://marathoncheats.cc/sitemap.xml
-Sitemap: https://marathoncheats.cc/video-sitemap.xml
-Sitemap: https://marathoncheats.cc/image-sitemap.xml

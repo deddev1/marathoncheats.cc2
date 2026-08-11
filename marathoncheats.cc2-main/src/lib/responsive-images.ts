@@ -1,0 +1,63 @@
+export interface ResponsiveWidth {
+	src: string;
+	width: number;
+}
+
+/** Build a srcset string from width-tagged image paths. */
+export function buildSrcSet(widths: ResponsiveWidth[]): string {
+	return widths.map(({ src, width }) => `${src} ${width}w`).join(', ');
+}
+
+/** Build srcset for content images that have -480w / -960w variants. */
+export function contentSrcSet(baseSrc: string): string | undefined {
+	const match = baseSrc.match(/^(.+\/)(.+)\.webp$/i);
+	if (!match) return undefined;
+
+	const [, dir, name] = match;
+	if (
+		name.endsWith('-640w') ||
+		name.endsWith('-960w') ||
+		name.endsWith('-1400w') ||
+		name.endsWith('-1024w') ||
+		name.endsWith('-1536w')
+	) {
+		return undefined;
+	}
+
+	return buildSrcSet(
+		contentWidths.map((width) => ({
+			src: `${dir}${name}-${width}w.webp`,
+			width,
+		})),
+	);
+}
+
+/**
+ * Homepage hero — native 1024×409 (~2.5:1).
+ * Prefer the PNG master (no lossy compression). WebP is lossless fallback only.
+ */
+export const heroResponsive: ResponsiveWidth[] = [
+	{ src: '/images/marathon-cheats-hero-full.png', width: 1024 },
+];
+
+export const heroDesktopResponsive: ResponsiveWidth[] = heroResponsive;
+
+/** Uncompressed PNG master — do not point this at a lossy webp. */
+export const heroSrc = '/images/marathon-cheats-hero-full.png';
+export const heroSrcSet = `${heroSrc} 1024w`;
+export const heroSizes = '100vw';
+
+/** LCP preload — PNG master. */
+export const heroPreloadSrc = heroSrc;
+
+/** Exact native dimensions (no zoom crop). */
+export const heroWidth = 1024;
+export const heroHeight = 409;
+
+/** Responsive widths for below-fold content images. */
+export const contentWidths = [480, 960] as const;
+
+export const galleryFeaturedSizes = '(max-width: 560px) 100vw, (max-width: 900px) 90vw, 640px';
+export const galleryTileSizes = '(max-width: 560px) 100vw, (max-width: 900px) 45vw, 320px';
+export const productMainSizes = '(max-width: 900px) 100vw, 640px';
+export const productThumbSizes = '160px';
