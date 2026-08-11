@@ -10,16 +10,19 @@ export function buildSrcSet(widths: ResponsiveWidth[]): string {
 
 /** Build srcset for content images that have -480w / -960w variants. */
 export function contentSrcSet(baseSrc: string): string | undefined {
-	const match = baseSrc.match(/^(.+\/)(.+)\.webp$/i);
+	// Supports both `/esp.webp` and `/images/esp.webp`
+	const match = baseSrc.match(/^(.*\/)?([^/]+)\.webp$/i);
 	if (!match) return undefined;
 
-	const [, dir, name] = match;
+	const dir = match[1] || '/';
+	const name = match[2];
 	if (
 		name.endsWith('-640w') ||
 		name.endsWith('-960w') ||
 		name.endsWith('-1400w') ||
 		name.endsWith('-1024w') ||
-		name.endsWith('-1536w')
+		name.endsWith('-1536w') ||
+		name.endsWith('-480w')
 	) {
 		return undefined;
 	}
@@ -37,13 +40,13 @@ export function contentSrcSet(baseSrc: string): string | undefined {
  * Prefer the PNG master (no lossy compression). WebP is lossless fallback only.
  */
 export const heroResponsive: ResponsiveWidth[] = [
-	{ src: '/images/marathon-cheats-hero-full.png', width: 1024 },
+	{ src: '/hero.png', width: 1024 },
 ];
 
 export const heroDesktopResponsive: ResponsiveWidth[] = heroResponsive;
 
 /** Uncompressed PNG master — do not point this at a lossy webp. */
-export const heroSrc = '/images/marathon-cheats-hero-full.png';
+export const heroSrc = '/hero.png';
 export const heroSrcSet = `${heroSrc} 1024w`;
 export const heroSizes = '100vw';
 

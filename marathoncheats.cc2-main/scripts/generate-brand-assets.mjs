@@ -19,12 +19,16 @@ async function squareLogoBuffer(size) {
 
 async function generateSiteLogo() {
 	const logoPng = await squareLogoBuffer(512);
-	await writeFile(path.join(imagesDir, 'marathon-cheats-logo.png'), logoPng);
-	console.log('Wrote public/images/marathon-cheats-logo.png (512×512)');
+	await writeFile(path.join(publicDir, 'logo.png'), logoPng);
+	console.log('Wrote public/logo.png (512×512)');
 
 	const logoWebp = await sharp(logoPng).webp({ quality: 90, effort: 6 }).toBuffer();
+	await writeFile(path.join(publicDir, 'logo.webp'), logoWebp);
+	console.log('Wrote public/logo.webp');
+	// Keep legacy /images/ copies in sync for old bookmarks
+	await mkdir(imagesDir, { recursive: true });
+	await writeFile(path.join(imagesDir, 'marathon-cheats-logo.png'), logoPng);
 	await writeFile(path.join(imagesDir, 'marathon-cheats-logo.webp'), logoWebp);
-	console.log('Wrote public/images/marathon-cheats-logo.webp');
 }
 
 async function generateFavicons(logoBuffer) {
