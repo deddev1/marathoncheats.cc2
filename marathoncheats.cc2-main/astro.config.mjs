@@ -20,6 +20,10 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss(), brandStudioPlugin()],
+		server: {
+			// Allow Cloudflare quick tunnels / localtunnel for remote preview
+			allowedHosts: true,
+		},
 		build: {
 			cssMinify: true,
 			minify: 'terser',
