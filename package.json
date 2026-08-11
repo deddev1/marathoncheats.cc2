@@ -1,9 +1,6 @@
 {
   "name": "marathoncheats.cc2",
   "private": true,
-  "workspaces": [
-    "marathoncheats.cc2-main"
-  ],
   "scripts": {
     "install:app": "bash install-app.sh",
     "postinstall": "bash install-app.sh",
