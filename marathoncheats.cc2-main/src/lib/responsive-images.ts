@@ -10,12 +10,14 @@ export function buildSrcSet(widths: ResponsiveWidth[]): string {
 
 /** Build srcset for content images that have -480w / -960w variants. */
 export function contentSrcSet(baseSrc: string): string | undefined {
-	const match = baseSrc.match(/^(.+\/)(.+)\.webp$/i);
+	// Supports both `/images/foo.webp` and simple root `/foo.webp`
+	const match = baseSrc.match(/^(\/|(?:.+\/))([^/]+)\.webp$/i);
 	if (!match) return undefined;
 
 	const [, dir, name] = match;
 	if (
 		name.endsWith('-640w') ||
+		name.endsWith('-480w') ||
 		name.endsWith('-960w') ||
 		name.endsWith('-1400w') ||
 		name.endsWith('-1024w') ||
