@@ -18,6 +18,7 @@
     "validate:canonical-redirects": "tsx scripts/validate-canonical-redirects.ts",
     "validate:no-dist-headers": "tsx scripts/validate-no-dist-headers.ts",
     "validate:dist-seo-assets": "tsx scripts/validate-dist-seo-assets.ts",
+    "validate:live-sitemap": "tsx scripts/validate-live-sitemap.ts",
     "prepare:cloudflare-deploy": "tsx scripts/prepare-cloudflare-deploy.ts",
     "fetch:ign-images": "node scripts/fetch-ign-marathon-images.mjs",
     "convert:images-webp": "node scripts/convert-images-to-webp.mjs",

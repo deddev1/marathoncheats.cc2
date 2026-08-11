@@ -94,7 +94,7 @@ export async function serveSeoAsset(request: Request, env: Env, pathname: string
   if (!SEO_ASSET_PATHS.has(normalized)) return null;
 
   const assetUrl = new URL(normalized, request.url);
-  const assetResponse = await env.ASSETS.fetch(new Request(assetUrl.toString(), request));
+  const assetResponse = await env.ASSETS.fetch(new Request(assetUrl.toString(), { method: 'GET' }));
   if (!assetResponse.ok) return null;
 
   const body = await assetResponse.text();
@@ -103,6 +103,11 @@ export async function serveSeoAsset(request: Request, env: Env, pathname: string
   const headers = new Headers();
   headers.set('Content-Type', SEO_ASSET_CONTENT_TYPES[normalized] ?? 'application/xml; charset=utf-8');
   applyResponseHeaders(normalized, headers);
+
+  if (request.method === 'HEAD') {
+    return new Response(null, { status: 200, headers });
+  }
+
   return new Response(body, { status: 200, headers });
 }
 
@@ -247,7 +252,7 @@ export function applyResponseHeaders(pathname: string, headers: Headers) {
   }
 
   if (SHORT_CACHE_PATHS.has(pathname)) {
-    headers.set('Cache-Control', 'public, max-age=86400');
+    headers.set('Cache-Control', 'public, max-age=3600, must-revalidate');
     if (pathname.endsWith('.xml')) {
       headers.set('Content-Type', 'application/xml; charset=utf-8');
     }
