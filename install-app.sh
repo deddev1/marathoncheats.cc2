@@ -15,9 +15,16 @@ if build_deps_installed; then
 fi
 
 echo "Installing marathoncheats.cc2-main dependencies..."
-npm ci --prefix "$APP_DIR" --include=dev
+if [[ -f "$APP_DIR/package-lock.json" ]]; then
+  if ! npm ci --prefix "$APP_DIR" --include=dev; then
+    echo "npm ci failed for app; falling back to npm install..." >&2
+    npm install --prefix "$APP_DIR" --include=dev --no-fund --no-audit
+  fi
+else
+  npm install --prefix "$APP_DIR" --include=dev --no-fund --no-audit
+fi
 
 if ! build_deps_installed; then
-  echo "App build dependencies are still missing after npm ci." >&2
+  echo "App build dependencies are still missing after install." >&2
   exit 1
 fi
