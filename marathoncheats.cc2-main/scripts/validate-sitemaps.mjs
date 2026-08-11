@@ -266,6 +266,55 @@ async function main() {
 		bump();
 	} else ok('sitemap-images.xml has unique page <loc> hosts (no duplicates)');
 
+	// Image asset URLs must exist in dist and use simple root paths (/esp.webp, not /images/marathon-cheats-…)
+	const imageAssetLocs = [
+		...sitemapImages.matchAll(/<image:loc>([^<]+)<\/image:loc>/g),
+		...sitemapEn.matchAll(/<image:loc>([^<]+)<\/image:loc>/g),
+	].map((m) => m[1]);
+	const uniqueAssets = [...new Set(imageAssetLocs)];
+	let assetErrors = 0;
+	for (const assetUrl of uniqueAssets) {
+		if (!assetUrl.startsWith(`${SITE}/`)) {
+			fail(`Image asset not on apex origin: ${assetUrl}`);
+			bump();
+			assetErrors += 1;
+			continue;
+		}
+		const assetPath = assetUrl.slice(SITE.length);
+		if (assetPath.startsWith('/images/marathon-cheats-') || /[0-9a-f]{8}-[0-9a-f-]{27}/i.test(assetPath)) {
+			fail(`Image asset URL is not simple: ${assetPath}`);
+			bump();
+			assetErrors += 1;
+		}
+		const diskPath = path.join(DIST, assetPath.replace(/^\//, ''));
+		try {
+			await access(diskPath);
+		} catch {
+			fail(`Image asset missing from dist: ${assetPath}`);
+			bump();
+			assetErrors += 1;
+		}
+	}
+	if (assetErrors === 0) {
+		ok(`All ${uniqueAssets.length} sitemap image assets exist in dist with simple URLs`);
+	}
+
+	// Trailing-slash policy must match Astro (always) so GSC locs do not 301
+	for (const wranglerRel of ['wrangler.toml', path.join('..', 'wrangler.toml')]) {
+		const wranglerPath = path.join(ROOT, wranglerRel);
+		try {
+			const wrangler = await readFile(wranglerPath, 'utf8');
+			if (!/html_handling\s*=\s*"force-trailing-slash"/.test(wrangler)) {
+				fail(`${path.relative(ROOT, wranglerPath)} must set html_handling = "force-trailing-slash"`);
+				bump();
+			} else {
+				ok(`${path.relative(ROOT, wranglerPath)} forces trailing slashes (matches sitemap locs)`);
+			}
+		} catch {
+			// root wrangler may be outside package when validating from app dir only
+		}
+	}
+
 	for (const required of [`${SITE}/features/`, `${SITE}/pricing/`, `${SITE}/updates/`]) {
 		if (!enLocs.includes(required)) {
 			fail(`Missing core page in sitemap-en.xml: ${required}`);

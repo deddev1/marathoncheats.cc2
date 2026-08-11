@@ -20,13 +20,13 @@ export const brand = {
 	/** Anti-cheat name used in Status / FAQ copy */
 	antiCheat: 'BattlEye',
 
-	logo: '/images/marathon-cheats-logo.webp',
-	logoRaster: '/images/marathon-cheats-logo.png',
+	logo: '/logo.webp',
+	logoRaster: '/logo.png',
 	logoRasterWidth: 512,
 	logoRasterHeight: 512,
 	logoAlt: 'marathon cheats logo',
-	defaultOgImage: '/images/marathon-cheats-hero-full.png',
-	heroImage: '/images/marathon-cheats-hero-full.png',
+	defaultOgImage: '/hero.png',
+	heroImage: '/hero.png',
 
 	plans: [
 		{ id: 'monthly', label: 'Monthly', price: 40, duration: 'P30D' },
@@ -136,32 +136,32 @@ export const brand = {
 		reviewsImageCaption: 'What buyers say about {primaryKeyword}',
 		images: [
 			{
-				src: '/images/marathon-cheats-esp.webp',
+				src: '/esp.webp',
 				title: 'marathon cheats esp',
 				caption: 'marathon cheats esp wallhack overlay',
 			},
 			{
-				src: '/images/marathon-cheats-wallhack.webp',
+				src: '/wallhack.webp',
 				title: 'marathon cheats wallhack',
 				caption: 'marathon cheats wallhack for raids',
 			},
 			{
-				src: '/images/marathon-cheats-aimbot.webp',
+				src: '/aimbot.webp',
 				title: 'marathon cheats aimbot',
 				caption: 'marathon cheats aimbot soft aim',
 			},
 			{
-				src: '/images/marathon-cheats-aimbot-view.webp',
+				src: '/aimbot-view.webp',
 				title: 'marathon cheats features',
 				caption: 'marathon cheats features aimbot view',
 			},
 			{
-				src: '/images/marathon-cheats-radar.webp',
+				src: '/radar.webp',
 				title: 'marathon cheats status',
 				caption: 'marathon cheats radar after patch updates',
 			},
 			{
-				src: '/images/marathon-cheats-raid.webp',
+				src: '/raid.webp',
 				title: 'marathon cheats store',
 				caption: 'marathon cheats plans for Windows PC',
 			},

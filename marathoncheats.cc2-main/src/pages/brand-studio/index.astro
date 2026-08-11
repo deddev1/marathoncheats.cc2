@@ -664,14 +664,14 @@ const images: Field[] = [
 	{
 		name: 'logo',
 		label: 'Logo (webp)',
-		tip: 'What: Path to the webp logo in /public. | Why: Site logo asset. Must live under /images/. | Example: /images/my-brand-logo.webp',
+		tip: 'What: Path to the webp logo in /public. | Why: Site logo asset. Use a simple root URL. | Example: /logo.webp',
 		value: brand.logo,
 		maxlength: 300,
 	},
 	{
 		name: 'logoRaster',
 		label: 'Logo (png)',
-		tip: 'What: PNG version of the logo. | Why: Used for schema / favicon-style raster needs. | Example: /images/my-brand-logo.png',
+		tip: 'What: PNG version of the logo. | Why: Used for schema / favicon-style raster needs. | Example: /logo.png',
 		value: brand.logoRaster,
 		maxlength: 300,
 	},
@@ -703,14 +703,14 @@ const images: Field[] = [
 	{
 		name: 'defaultOgImage',
 		label: 'Default OG image',
-		tip: 'What: Default image when the site is shared on Discord / Twitter / Facebook. | Why: Open Graph preview. Put a real in-game or brand shot under /images/. | Example: /images/fortnite-combat.webp',
+		tip: 'What: Default image when the site is shared on Discord / Twitter / Facebook. | Why: Open Graph preview. Use a simple root URL. | Example: /social.png',
 		value: brand.defaultOgImage,
 		maxlength: 300,
 	},
 	{
 		name: 'heroImage',
 		label: 'Hero image',
-		tip: 'What: Big homepage banner image path. | Why: First thing visitors see. Keep file in /public/images/. | Example: /images/fortnite-hero-banner.webp',
+		tip: 'What: Big homepage banner image path. | Why: First thing visitors see. Use a simple root URL. | Example: /hero.png',
 		value: brand.heroImage,
 		maxlength: 300,
 	},
@@ -1253,7 +1253,7 @@ const sections = [
 
 								<section class="studio__block" id="section-images">
 									<h2>Images</h2>
-									<p class="studio__block-desc">Logo, OG, and hero asset paths in /public/images/.</p>
+									<p class="studio__block-desc">Logo, OG, and hero asset paths — prefer simple root URLs like /hero.png.</p>
 									<div class="studio__grid">
 										{images.map((f) => (
 											<label class:list={['studio__field', f.span && 'is-span']}>
@@ -1376,7 +1376,7 @@ const sections = [
 									<details class="studio__details" open>
 										<summary>Image sitemap entries (6)</summary>
 										<p class="studio__details-lede">
-											Paths stay relative (<code>/images/…</code>). Full image URLs = Site URL + path,
+											Paths stay relative (<code>/hero.png</code>). Full image URLs = Site URL + path,
 											updated when the domain changes.
 										</p>
 										<div class="studio__sitemap-images">
@@ -1392,7 +1392,7 @@ const sections = [
 																type="text"
 																maxlength={300}
 																value={img.src}
-																placeholder="/images/example.webp"
+																placeholder="/esp.webp"
 															/>
 														</label>
 														<p class="studio__sitemap-abs" data-sitemap-abs-for={`sitemapImage${n}Src`}>
@@ -1709,7 +1709,7 @@ const sections = [
 
 					root.querySelectorAll('[data-sitemap-abs-for]').forEach((el) => {
 						const name = el.getAttribute('data-sitemap-abs-for');
-						const path = val(name) || '/images/…';
+						const path = val(name) || '/hero.png';
 						const clean = path.startsWith('/') ? path : '/' + path;
 						el.textContent = origin + clean;
 					});

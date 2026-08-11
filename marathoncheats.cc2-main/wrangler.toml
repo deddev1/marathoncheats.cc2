@@ -7,5 +7,8 @@ main = "src/worker.ts"
 directory = "./dist"
 binding = "ASSETS"
 not_found_handling = "404-page"
+# Match Astro trailingSlash: 'always' + sitemap locs (/pricing/, /de/).
+# drop-trailing-slash would 301 those URLs and GSC marks them Invalid.
+html_handling = "force-trailing-slash"
 # Run Worker first so www/http → https://marathoncheats.cc 301s always apply
 run_worker_first = true

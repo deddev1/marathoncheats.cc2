@@ -61,7 +61,7 @@ function buildI18nContent() {
 			const p = pages[pageId];
 			if (p.title.length > 60) console.warn(`WARN [${locale}/${pageId}] title ${p.title.length} chars: ${p.title}`);
 			if (p.description.length > 160) console.warn(`WARN [${locale}/${pageId}] desc ${p.description.length} chars`);
-			if (!p.heroImage?.startsWith('/images/marathon') && !p.heroImage?.startsWith('/images/bungie-marathon')) {
+			if (!p.heroImage || !/^\/[\w./-]+\.(webp|png|jpe?g)$/i.test(p.heroImage) || p.heroImage.includes('..')) {
 				throw new Error(`Invalid heroImage for ${locale}/${pageId}: ${p.heroImage}`);
 			}
 			if (pageId === 'home' && p.sections.length !== 2) {

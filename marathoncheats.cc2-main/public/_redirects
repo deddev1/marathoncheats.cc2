@@ -8,3 +8,49 @@
 
 # Legacy sitemap URL → primary index (GSC / old crawlers)
 /sitemap-index.xml /sitemap.xml 301
+
+# Legacy long image paths → simple root URLs
+/images/marathon-cheats-hero-full.png /hero.png 301
+/images/marathon-cheats-hero.png /hero-sm.png 301
+/images/marathon-cheats-hero.webp /hero.webp 301
+/images/marathon-cheats-esp.webp /esp.webp 301
+/images/marathon-cheats-esp.png /esp.png 301
+/images/marathon-cheats-esp-480w.webp /esp-480w.webp 301
+/images/marathon-cheats-esp-960w.webp /esp-960w.webp 301
+/images/marathon-cheats-wallhack.webp /wallhack.webp 301
+/images/marathon-cheats-wallhack.png /wallhack.png 301
+/images/marathon-cheats-wallhack-480w.webp /wallhack-480w.webp 301
+/images/marathon-cheats-wallhack-960w.webp /wallhack-960w.webp 301
+/images/marathon-cheats-aimbot.webp /aimbot.webp 301
+/images/marathon-cheats-aimbot.png /aimbot.png 301
+/images/marathon-cheats-aimbot-480w.webp /aimbot-480w.webp 301
+/images/marathon-cheats-aimbot-960w.webp /aimbot-960w.webp 301
+/images/marathon-cheats-aimbot-view.webp /aimbot-view.webp 301
+/images/marathon-cheats-aimbot-view-480w.webp /aimbot-view-480w.webp 301
+/images/marathon-cheats-aimbot-view-960w.webp /aimbot-view-960w.webp 301
+/images/marathon-cheats-radar.webp /radar.webp 301
+/images/marathon-cheats-radar-480w.webp /radar-480w.webp 301
+/images/marathon-cheats-radar-960w.webp /radar-960w.webp 301
+/images/marathon-cheats-raid.webp /raid.webp 301
+/images/marathon-cheats-raid-480w.webp /raid-480w.webp 301
+/images/marathon-cheats-raid-960w.webp /raid-960w.webp 301
+/images/marathon-cheats-combat.webp /combat.webp 301
+/images/marathon-cheats-logo.webp /logo.webp 301
+/images/marathon-cheats-logo.png /logo.png 301
+/images/reviews-banner.webp /reviews.webp 301
+/images/reviews-banner.png /reviews.png 301
+/images/zadeyo-logo.webp /zadeyo.webp 301
+/images/zadeyo-logo.png /zadeyo.png 301
+/images/zadeyo-logo-full.webp /zadeyo-full.webp 301
+/images/hero-banner.webp /banner.webp 301
+/images/hero-banner.png /banner.png 301
+/images/marathon-hero-ghost-hi.png /ghost.png 301
+/marathon-cheats-social-preview.png /social.png 301
+/marathon-cheats-social-preview.webp /social.webp 301
+/og-google-preview.png /og.png 301
+/og-google-preview.webp /og.webp 301
+/marathon-safety-characters.webp /safety.webp 301
+/marathon-safety-characters-purple.webp /safety-purple.webp 301
+/rt-removebg-preview.png /icon.png 301
+/image-44fb6aa2-4123-47aa-ba38-e2a9f0bdaee6.png /gameplay.png 301
+/image-44fb6aa2-4123-47aa-ba38-e2a9f0bdaee6.webp /gameplay.webp 301
