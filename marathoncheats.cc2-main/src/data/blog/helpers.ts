@@ -1,5 +1,4 @@
 import { siteConfig } from '../site';
-import { marathonImages } from '../marathon';
 import { blogSitemapImageMeta } from '../brand-sitemap';
 import {
 	defaultLocale,
@@ -11,17 +10,42 @@ import { resolvePageContextFromPath } from '../i18n/routing';
 import type { BlogImageKey, BlogPostDefinition, BlogTranslation, ResolvedBlogPost } from './types';
 import { blogPosts as rawBlogPosts } from './posts.generated';
 
-const imageMap: Record<BlogImageKey, string> = {
-	hero: marathonImages.espWallhack,
-	espWallhack: marathonImages.espWallhack,
-	aimbotCombat: marathonImages.aimbotCombat,
-	squadFight: marathonImages.aimbotCombat,
-	headerArt: marathonImages.playerEsp,
-	cheatsPackage: marathonImages.espWallhack,
-	playerEsp: marathonImages.playerEsp,
-	rebootFight: marathonImages.aimbotCombat,
-	battleRoyaleCombat: marathonImages.cheatsCombat,
-	battleRoyaleIslandMap: marathonImages.espWallhack,
+/**
+ * One unique Marathon cover per blog post.
+ * Sources: user cheat screenshots (ESP/aimbot) + IGN Bungie Marathon press / cinematic art.
+ * Simple root URLs — never reuse the same file across posts.
+ */
+const postImageById: Record<string, string> = {
+	'marathon-esp-wallhack-explained': '/blog-esp.webp',
+	'marathon-aimbot-settings-guide': '/blog-aimbot.webp',
+	'patch-notes-breakdown': '/blog-patch.webp',
+	'marathon-skin-leaks': '/blog-skins.webp',
+	'marathon-weapon-tier-list': '/blog-weapons.webp',
+	'marathon-loot-run-meta': '/blog-loot.webp',
+	'marathon-tournament-meta': '/blog-tournament.webp',
+	'marathon-loot-routes': '/blog-routes.webp',
+	'marathon-pro-settings': '/blog-settings.webp',
+	'marathon-warmup-maps': '/blog-warmup.webp',
+	'marathon-cheats-complete-guide': '/blog-guide.webp',
+	'bungie-marathon-cheats-buyers-guide': '/blog-buyers.webp',
+	'marathon-cheats-2026-whats-new': '/blog-2026.webp',
+	'undetected-marathon-cheats-battleye': '/blog-battleye.webp',
+	'marathon-cheats-vs-cheatvault': '/blog-vs-cheatvault.webp',
+	'elitefn-two-week-test': '/blog-elitefn.webp',
+	'marathon-cheats-vs-ghostware': '/blog-vs-ghostware.webp',
+};
+
+const imageKeyFallback: Record<BlogImageKey, string> = {
+	hero: '/blog-2026.webp',
+	espWallhack: '/blog-esp.webp',
+	aimbotCombat: '/blog-aimbot.webp',
+	squadFight: '/blog-patch.webp',
+	headerArt: '/blog-skins.webp',
+	cheatsPackage: '/blog-buyers.webp',
+	playerEsp: '/blog-warmup.webp',
+	rebootFight: '/blog-battleye.webp',
+	battleRoyaleCombat: '/blog-loot.webp',
+	battleRoyaleIslandMap: '/blog-routes.webp',
 };
 
 function expandTranslations(
@@ -40,8 +64,9 @@ export const blogPosts: BlogPostDefinition[] = rawBlogPosts.map((post) => ({
 	translations: expandTranslations(post.translations as Partial<Record<LocaleCode, BlogTranslation>> & { en: BlogTranslation }),
 }));
 
-export function getBlogImageSrc(key: BlogImageKey): string {
-	return imageMap[key];
+export function getBlogImageSrc(key: BlogImageKey, postId?: string): string {
+	if (postId && postImageById[postId]) return postImageById[postId];
+	return imageKeyFallback[key];
 }
 
 export function getBlogBasePath(locale: LocaleCode): string {
@@ -92,7 +117,7 @@ export function resolvePost(post: BlogPostDefinition, locale: LocaleCode): Resol
 		...post,
 		locale,
 		translation,
-		imageSrc: getBlogImageSrc(post.imageKey),
+		imageSrc: getBlogImageSrc(post.imageKey, post.id),
 		canonicalPath: getBlogPostPath(locale, translation.slug),
 	};
 }
@@ -204,7 +229,7 @@ export function getBlogSitemapEntriesForLocale(locale: LocaleCode) {
 
 	for (const post of blogPosts) {
 		const t = post.translations[locale];
-		const imageSrc = getBlogImageSrc(post.imageKey);
+		const imageSrc = getBlogImageSrc(post.imageKey, post.id);
 		const isProductPost = /Marathon Cheats|Marathon Cheats|Aimbot|ESP|Undetected|Comparisons/i.test(
 			post.category,
 		);

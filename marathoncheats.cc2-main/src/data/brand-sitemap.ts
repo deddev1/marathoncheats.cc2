@@ -13,32 +13,32 @@ export type BrandSitemapImage = {
 
 const defaultImages: BrandSitemapImage[] = [
 	{
-		src: '/images/marathon-cheats-esp.webp',
+		src: '/esp.webp',
 		title: 'marathon cheats esp',
 		caption: 'marathon cheats esp wallhack',
 	},
 	{
-		src: '/images/marathon-cheats-wallhack.webp',
+		src: '/wallhack.webp',
 		title: 'marathon cheats wallhack',
 		caption: 'marathon cheats wallhack esp',
 	},
 	{
-		src: '/images/marathon-cheats-aimbot.webp',
+		src: '/aimbot.webp',
 		title: 'marathon cheats aimbot',
 		caption: 'marathon cheats aimbot soft aim',
 	},
 	{
-		src: '/images/marathon-cheats-aimbot-view.webp',
+		src: '/aimbot-view.webp',
 		title: 'marathon cheats aimbot',
 		caption: 'marathon cheats aimbot view',
 	},
 	{
-		src: '/images/marathon-cheats-radar.webp',
+		src: '/radar.webp',
 		title: 'marathon cheats radar',
 		caption: 'marathon cheats radar hack',
 	},
 	{
-		src: '/images/marathon-cheats-raid.webp',
+		src: '/combat.webp',
 		title: 'marathon cheats',
 		caption: 'marathon cheats in raid',
 	},
@@ -103,7 +103,11 @@ function normalizeImages(input: unknown): BrandSitemapImage[] {
 		const src = typeof row.src === 'string' ? row.src.trim() : '';
 		const title = typeof row.title === 'string' ? row.title.trim() : '';
 		const caption = typeof row.caption === 'string' ? row.caption.trim() : '';
-		if (!src.startsWith('/images/') || !title || !caption) continue;
+		// Simple root URLs (/esp.webp) or legacy /images/… paths
+		const okPath =
+			(/^\/[a-z0-9][\w.-]*\.(webp|png|jpe?g|avif|gif)$/i.test(src) && !src.includes('..')) ||
+			src.startsWith('/images/');
+		if (!okPath || !title || !caption) continue;
 		if (seen.has(src)) continue;
 		seen.add(src);
 		out.push({ src, title, caption });

@@ -13,3 +13,22 @@
 /images/marathon-cheats-hero-full.png /hero.png 301
 /images/marathon-cheats-hero.png /hero.png 301
 /marathon-banner.png /hero.png 301
+
+# Legacy long image paths → simple root URLs
+/images/marathon-cheats-esp.webp /esp.webp 301
+/images/marathon-cheats-esp.png /esp.webp 301
+/images/marathon-cheats-wallhack.webp /wallhack.webp 301
+/images/marathon-cheats-wallhack.png /wallhack.webp 301
+/images/marathon-cheats-aimbot.webp /aimbot.webp 301
+/images/marathon-cheats-aimbot.png /aimbot.webp 301
+/images/marathon-cheats-aimbot-view.webp /aimbot-view.webp 301
+/images/marathon-cheats-radar.webp /radar.webp 301
+/images/marathon-cheats-raid.webp /combat.webp 301
+
+# Legacy blog image paths → simple blog covers
+/images/blog-esp.webp /blog-esp.webp 301
+/images/blog-aimbot.webp /blog-aimbot.webp 301
+/images/blog-wallhack.webp /blog-wallhack.webp 301
+/images/blog-combat.webp /blog-combat.webp 301
+/images/blog-softaim.webp /blog-softaim.webp 301
+/images/blog-radar.webp /blog-radar.webp 301
