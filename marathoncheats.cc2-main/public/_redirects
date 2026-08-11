@@ -13,3 +13,14 @@
 /images/marathon-cheats-hero-full.png /hero.png 301
 /images/marathon-cheats-hero.png /hero.png 301
 /marathon-banner.png /hero.png 301
+
+# Legacy long image paths → simple root URLs
+/images/marathon-cheats-esp.webp /esp.webp 301
+/images/marathon-cheats-esp.png /esp.webp 301
+/images/marathon-cheats-wallhack.webp /wallhack.webp 301
+/images/marathon-cheats-wallhack.png /wallhack.webp 301
+/images/marathon-cheats-aimbot.webp /aimbot.webp 301
+/images/marathon-cheats-aimbot.png /aimbot.webp 301
+/images/marathon-cheats-aimbot-view.webp /aimbot-view.webp 301
+/images/marathon-cheats-radar.webp /radar.webp 301
+/images/marathon-cheats-raid.webp /combat.webp 301

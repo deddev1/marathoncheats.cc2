@@ -1,5 +1,4 @@
 import { siteConfig } from '../site';
-import { marathonImages } from '../marathon';
 import { blogSitemapImageMeta } from '../brand-sitemap';
 import {
 	defaultLocale,
@@ -11,17 +10,18 @@ import { resolvePageContextFromPath } from '../i18n/routing';
 import type { BlogImageKey, BlogPostDefinition, BlogTranslation, ResolvedBlogPost } from './types';
 import { blogPosts as rawBlogPosts } from './posts.generated';
 
+/** Blog cover images — simple root URLs mapped to accurate Marathon Cheats visuals. */
 const imageMap: Record<BlogImageKey, string> = {
-	hero: marathonImages.espWallhack,
-	espWallhack: marathonImages.espWallhack,
-	aimbotCombat: marathonImages.aimbotCombat,
-	squadFight: marathonImages.aimbotCombat,
-	headerArt: marathonImages.playerEsp,
-	cheatsPackage: marathonImages.espWallhack,
-	playerEsp: marathonImages.playerEsp,
-	rebootFight: marathonImages.aimbotCombat,
-	battleRoyaleCombat: marathonImages.cheatsCombat,
-	battleRoyaleIslandMap: marathonImages.espWallhack,
+	hero: '/esp.webp',
+	espWallhack: '/wallhack.webp',
+	aimbotCombat: '/aimbot.webp',
+	squadFight: '/combat.webp',
+	headerArt: '/softaim.webp',
+	cheatsPackage: '/marauders.webp',
+	playerEsp: '/radar.webp',
+	rebootFight: '/aimbot-view.webp',
+	battleRoyaleCombat: '/combat.webp',
+	battleRoyaleIslandMap: '/esp.webp',
 };
 
 function expandTranslations(
