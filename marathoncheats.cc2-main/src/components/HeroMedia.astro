@@ -1,0 +1,35 @@
+---
+import {
+	heroAvifSrcSet,
+	heroHeight,
+	heroSizes,
+	heroSrc,
+	heroWebpSrcSet,
+	heroWidth,
+} from '../lib/responsive-images';
+
+interface Props {
+	alt?: string;
+	class?: string;
+	fetchpriority?: 'high' | 'low' | 'auto';
+}
+
+const { alt = '', class: className, fetchpriority = 'high' } = Astro.props;
+---
+
+<picture>
+	<source type="image/avif" srcset={heroAvifSrcSet} sizes={heroSizes} />
+	<source type="image/webp" srcset={heroWebpSrcSet} sizes={heroSizes} />
+	<img
+		src={heroSrc}
+		srcset={heroWebpSrcSet}
+		sizes={heroSizes}
+		alt={alt}
+		width={heroWidth}
+		height={heroHeight}
+		class={className}
+		fetchpriority={fetchpriority}
+		loading="eager"
+		decoding="async"
+	/>
+</picture>

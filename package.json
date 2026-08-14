@@ -1,0 +1,20 @@
+{
+  "name": "marathoncheats.cc2",
+  "private": true,
+  "scripts": {
+    "install:app": "bash install-app.sh",
+    "postinstall": "bash install-app.sh",
+    "prebuild": "bash install-app.sh",
+    "build": "bash build.sh",
+    "dev": "npm --prefix marathoncheats.cc2-main run dev",
+    "deploy": "bash deploy.sh deploy",
+    "deploy:preview": "bash deploy.sh deploy",
+    "deploy:version": "bash deploy.sh versions upload"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "wrangler": "^4.113.0"
+  }
+}

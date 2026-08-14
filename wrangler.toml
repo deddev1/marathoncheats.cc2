@@ -1,0 +1,25 @@
+name = "marathoncheats2"
+compatibility_date = "2026-01-01"
+main = "marathoncheats.cc2-main/src/worker.ts"
+
+[build]
+command = "bash build.sh"
+
+[assets]
+directory = "./marathoncheats.cc2-main/dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+# HTML/XML go through the Worker for www/http → apex 301s.
+# Hashed static files skip the Worker so JS/CSS/images hit the asset CDN directly.
+run_worker_first = [
+	"/*",
+	"!/_astro/*",
+	"!/images/*",
+	"!/*.woff2",
+	"!/*.webp",
+	"!/*.avif",
+	"!/*.png",
+	"!/*.svg",
+	"!/*.ico",
+	"!/*.css",
+]

@@ -1,0 +1,638 @@
+---
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { getLocalizedPath, resolvePageContextFromPath, type PageId } from '../data/i18n/routing';
+import { defaultLocale, type LocaleCode } from '../data/i18n/locales';
+import { reviewsBasePath } from '../data/reviews';
+import { siteConfig } from '../data/site';
+import { brandCopy } from '../data/site-core';
+import { fillBrandTokens } from '../data/brand';
+
+interface Props {
+	locale?: LocaleCode;
+	pageId?: PageId;
+}
+
+const { locale = defaultLocale, pageId: pageIdProp } = Astro.props;
+const pathContext = resolvePageContextFromPath(Astro.url.pathname);
+const pageId = pageIdProp ?? pathContext.pageId ?? 'home';
+const current = Astro.url.pathname;
+
+const links = [
+	{
+		id: 'hacks',
+		label: fillBrandTokens(brandCopy.navPreview),
+		edit: 'navPreview',
+		href: getLocalizedPath('hacks', locale),
+	},
+	{
+		id: 'esp',
+		label: fillBrandTokens(brandCopy.navFeatures),
+		edit: 'navFeatures',
+		href: getLocalizedPath('features', locale),
+	},
+	{
+		id: 'pricing',
+		label: fillBrandTokens(brandCopy.navStore),
+		edit: 'navStore',
+		href: getLocalizedPath('pricing', locale),
+	},
+	{
+		id: 'updates',
+		label: fillBrandTokens(brandCopy.navStatus),
+		edit: 'navStatus',
+		href: getLocalizedPath('updates', locale),
+	},
+	{
+		id: 'reviews',
+		label: fillBrandTokens(brandCopy.navReviews),
+		edit: 'navReviews',
+		href: reviewsBasePath,
+	},
+] as const;
+
+const buyShort = fillBrandTokens(brandCopy.ctaBuyShort);
+
+const icons: Record<(typeof links)[number]['id'], string> = {
+	hacks:
+		'M12 3.5l7.5 4.2v8.6L12 20.5l-7.5-4.2V7.7L12 3.5zm0 2.2L6.8 8.5v6.9L12 18.3l5.2-2.9V8.5L12 5.7z',
+	esp: 'M12 5a7 7 0 100 14 7 7 0 000-14zm0 2.2a4.8 4.8 0 110 9.6 4.8 4.8 0 010-9.6zM12 10.2v2.4l1.8 1.1',
+	pricing:
+		'M7.5 7.2h9M7.5 12h9M7.5 16.8H14M5 4.8h14a1.2 1.2 0 011.2 1.2v12a1.2 1.2 0 01-1.2 1.2H5A1.2 1.2 0 013.8 18V6A1.2 1.2 0 015 4.8z',
+	updates:
+		'M12 4.2v3.2M12 16.6v3.2M4.2 12h3.2M16.6 12h3.2M7.1 7.1l2.3 2.3M14.6 14.6l2.3 2.3M16.9 7.1l-2.3 2.3M9.4 14.6l-2.3 2.3',
+	reviews:
+		'M12 4.5l1.8 4.9H19l-4.1 3.2 1.6 5L12 14.9 7.5 17.6l1.6-5L5 9.4h5.2L12 4.5z',
+};
+
+const isActive = (href: string) => {
+	if (href === '/') return current === '/' || current === `/${locale}/`;
+	if (href === reviewsBasePath) return current === href || current.startsWith(`${href}`);
+	return current === href || current.startsWith(href);
+};
+---
+
+<header class="site-header" data-nav>
+	<div class="shell site-header__bar">
+		<a class="site-brand" href={getLocalizedPath('home', locale)} data-edit="name">
+			{siteConfig.name}
+		</a>
+		<nav class="site-nav" aria-label="Primary">
+			{
+				links.map((item) => (
+					<a href={item.href} class:list={[{ 'is-active': isActive(item.href) }]}>
+						<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+							<path
+								d={icons[item.id]}
+								stroke="currentColor"
+								stroke-width="1.6"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+							/>
+						</svg>
+						<span data-edit={item.edit}>{item.label}</span>
+					</a>
+				))
+			}
+		</nav>
+
+		<div class="site-tools">
+			<div class="site-tools__lang">
+				<LanguageSwitcher pageId={pageId} currentLocale={locale} />
+			</div>
+			<a
+				href={siteConfig.checkoutUrl}
+				class="site-tools__buy"
+				rel="noopener noreferrer"
+				aria-label={buyShort}
+			>
+				<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+					<path
+						d="M4.5 6.5h2.1l1.2 9.2h9.4l1.8-6.6H8.1M9.2 19.2a.9.9 0 100-1.8.9.9 0 000 1.8zm7.4 0a.9.9 0 100-1.8.9.9 0 000 1.8z"
+						stroke="currentColor"
+						stroke-width="1.6"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					/>
+				</svg>
+				<span data-edit="ctaBuyShort">{buyShort}</span>
+			</a>
+			<button
+				type="button"
+				class="site-menu"
+				data-nav-toggle
+				aria-expanded="false"
+				aria-controls="site-nav-panel"
+				aria-label="Open menu"
+			>
+				<span class="site-menu__bars" aria-hidden="true">
+					<span></span><span></span><span></span>
+				</span>
+			</button>
+		</div>
+	</div>
+
+	<div class="site-panel" id="site-nav-panel" data-nav-panel hidden>
+		<div class="shell site-panel__inner">
+			{/* Populated from desktop nav via JS — avoids duplicate anchor text in the HTML for crawlers */}
+			<nav class="site-panel__nav" aria-label="Mobile" data-nav-clone></nav>
+			<div class="site-panel__foot">
+				<div class="site-panel__lang">
+					<LanguageSwitcher pageId={pageId} currentLocale={locale} />
+				</div>
+				<a href={siteConfig.checkoutUrl} class="site-panel__buy" rel="noopener noreferrer">
+					<span data-edit="ctaBuy">{fillBrandTokens(brandCopy.ctaBuy)}</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</header>
+
+<script>
+	const header = document.querySelector('[data-nav]');
+	if (header instanceof HTMLElement) {
+		const toggle = header.querySelector('[data-nav-toggle]');
+		const panel = header.querySelector('[data-nav-panel]');
+		const desktopNav = header.querySelector('.site-nav');
+		const mobileNav = header.querySelector('[data-nav-clone]');
+		if (desktopNav instanceof HTMLElement && mobileNav instanceof HTMLElement) {
+			const clone = desktopNav.cloneNode(true);
+			if (clone instanceof HTMLElement) {
+				mobileNav.replaceChildren(...Array.from(clone.children));
+			}
+		}
+
+		const setOpen = (open: boolean) => {
+			toggle?.setAttribute('aria-expanded', String(open));
+			toggle?.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+			if (panel instanceof HTMLElement) panel.hidden = !open;
+			header.classList.toggle('is-open', open);
+			document.body.classList.toggle('nav-lock', open);
+		};
+
+		toggle?.addEventListener('click', () => {
+			const open = toggle.getAttribute('aria-expanded') !== 'true';
+			setOpen(open);
+		});
+
+		panel?.querySelectorAll('a').forEach((link) => {
+			link.addEventListener('click', () => setOpen(false));
+		});
+
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') setOpen(false);
+		});
+
+		const onScroll = () => {
+			header.classList.toggle('is-scrolled', window.scrollY > 8);
+		};
+		onScroll();
+		window.addEventListener('scroll', onScroll, { passive: true });
+
+		window.addEventListener('resize', () => {
+			if (window.matchMedia('(min-width: 1025px)').matches) setOpen(false);
+		});
+	}
+</script>
+
+<style is:global>
+	body.nav-lock {
+		overflow: hidden;
+	}
+
+	.site-header .lang-switcher__toggle {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		height: 2.15rem;
+		padding: 0 0.75rem;
+		border: 1px solid var(--line-soft);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--bg-elevated) 70%, transparent);
+		color: var(--ink-muted);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		list-style: none;
+		cursor: pointer;
+		transition:
+			color 0.15s ease,
+			background 0.15s ease,
+			border-color 0.15s ease;
+	}
+
+	.site-header .lang-switcher__toggle::-webkit-details-marker {
+		display: none;
+	}
+
+	.site-header .lang-switcher__toggle:hover {
+		color: var(--ink);
+		border-color: var(--line);
+		background: var(--bg-elevated);
+	}
+
+	.site-header .lang-switcher__toggle svg {
+		width: 0.85rem;
+		height: 0.85rem;
+		opacity: 0.75;
+	}
+
+	.site-header .lang-switcher__panel {
+		right: 0;
+		left: auto;
+		top: calc(100% + 0.45rem);
+		min-width: 15rem;
+		max-height: min(70vh, 22rem);
+		overflow: auto;
+		background: var(--bg-elevated);
+		border: 1px solid var(--line);
+		border-radius: var(--radius-md);
+		box-shadow: 0 20px 48px rgba(0, 0, 0, 0.5);
+		z-index: 120;
+	}
+
+	.site-header .lang-switcher__link {
+		color: var(--ink);
+	}
+
+	.site-header .lang-switcher__link:hover,
+	.site-header .lang-switcher__link.is-current {
+		background: color-mix(in srgb, var(--magenta) 12%, transparent);
+	}
+
+	.site-panel .lang-switcher {
+		width: 100%;
+	}
+
+	.site-panel .lang-switcher__toggle {
+		width: 100%;
+		justify-content: flex-start;
+		height: 2.75rem;
+		border-radius: var(--radius-sm);
+	}
+
+	.site-panel .lang-switcher__panel {
+		position: static;
+		margin-top: 0.45rem;
+		max-height: 12rem;
+		box-shadow: none;
+	}
+</style>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 100;
+		padding-top: var(--safe-top, env(safe-area-inset-top, 0px));
+		background: color-mix(in srgb, var(--bg) 72%, transparent);
+		backdrop-filter: blur(14px) saturate(1.2);
+		-webkit-backdrop-filter: blur(14px) saturate(1.2);
+		border-bottom: 1px solid transparent;
+		transition:
+			background 0.2s ease,
+			border-color 0.2s ease,
+			box-shadow 0.2s ease;
+	}
+
+	.site-header.is-scrolled,
+	.site-header.is-open {
+		background: color-mix(in srgb, var(--bg) 92%, transparent);
+		border-bottom-color: var(--line-soft);
+		box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+	}
+
+	@media (max-width: 760px) {
+		.site-header {
+			backdrop-filter: none;
+			-webkit-backdrop-filter: none;
+			background: color-mix(in srgb, var(--bg) 96%, transparent);
+		}
+	}
+
+	.site-header__bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		min-height: var(--header-h);
+		gap: 0.75rem;
+	}
+
+	.site-brand {
+		display: none;
+		min-width: 0;
+		flex: 1 1 auto;
+		margin-right: 0.5rem;
+		font-family: var(--font-display);
+		font-size: 0.95rem;
+		font-weight: 700;
+		letter-spacing: -0.02em;
+		color: var(--ink);
+		text-decoration: none;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.site-brand:hover {
+		color: var(--magenta-soft);
+	}
+
+	.site-nav {
+		display: flex;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 0.1rem;
+		padding: 0.22rem;
+		border: 1px solid var(--line-soft);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--bg-elevated) 65%, transparent);
+		box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 5%, transparent);
+	}
+
+	.site-nav a {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.38rem;
+		padding: 0.4rem 0.8rem;
+		border-radius: 999px;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		color: var(--ink-muted);
+		white-space: nowrap;
+		transition:
+			color 0.15s ease,
+			background 0.15s ease;
+	}
+
+	.site-nav a svg {
+		width: 0.88rem;
+		height: 0.88rem;
+		flex-shrink: 0;
+		opacity: 0.72;
+	}
+
+	.site-nav a:hover {
+		color: var(--ink);
+		background: color-mix(in srgb, #fff 5%, transparent);
+	}
+
+	.site-nav a:hover svg,
+	.site-nav a.is-active svg {
+		opacity: 1;
+		color: var(--magenta-soft);
+	}
+
+	.site-nav a.is-active {
+		color: var(--ink);
+		background: color-mix(in srgb, #fff 10%, transparent);
+		box-shadow: inset 0 0 0 1px color-mix(in srgb, #fff 6%, transparent);
+	}
+
+	.site-tools {
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.45rem;
+		margin-left: auto;
+		min-width: 0;
+	}
+
+	.site-tools__buy {
+		position: relative;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.35rem;
+		min-height: 2.15rem;
+		height: auto;
+		padding: 0 1rem;
+		border-radius: 999px;
+		background: #fff;
+		color: #09090b;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: -0.01em;
+		transition:
+			background 0.15s ease,
+			transform 0.15s ease;
+	}
+
+	.site-tools__buy svg {
+		width: 0.9rem;
+		height: 0.9rem;
+	}
+
+	.site-tools__buy:hover {
+		background: #ececef;
+		color: #09090b;
+		transform: translateY(-1px);
+	}
+
+	.site-menu {
+		display: none;
+		align-items: center;
+		justify-content: center;
+		width: var(--touch-min, 2.75rem);
+		height: var(--touch-min, 2.75rem);
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--bg-elevated) 75%, transparent);
+		color: var(--ink);
+		flex-shrink: 0;
+	}
+
+	.site-menu__bars {
+		display: grid;
+		gap: 3.5px;
+		width: 0.95rem;
+	}
+
+	.site-menu__bars span {
+		display: block;
+		height: 1.5px;
+		border-radius: 999px;
+		background: currentColor;
+		transition:
+			transform 0.2s ease,
+			opacity 0.2s ease;
+		transform-origin: center;
+	}
+
+	.site-header.is-open .site-menu__bars span:nth-child(1) {
+		transform: translateY(5px) rotate(45deg);
+	}
+
+	.site-header.is-open .site-menu__bars span:nth-child(2) {
+		opacity: 0;
+	}
+
+	.site-header.is-open .site-menu__bars span:nth-child(3) {
+		transform: translateY(-5px) rotate(-45deg);
+	}
+
+	.site-panel {
+		border-top: 1px solid var(--line-soft);
+		background: var(--bg);
+		padding: 0.35rem 0 max(1.35rem, env(safe-area-inset-bottom, 0px));
+		max-height: min(70dvh, calc(100dvh - var(--header-h)));
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior: contain;
+		animation: panel-in 0.18s ease-out;
+	}
+
+	@keyframes panel-in {
+		from {
+			opacity: 0;
+			transform: translateY(-4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.site-panel__nav {
+		display: grid;
+	}
+
+	.site-panel__nav a {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		min-height: var(--touch-min, 2.75rem);
+		padding: 0.85rem 0.15rem;
+		font-size: 1.05rem;
+		font-weight: 500;
+		letter-spacing: -0.015em;
+		color: var(--ink-muted);
+		border-bottom: 1px solid var(--line-soft);
+	}
+
+	.site-panel__nav a svg {
+		width: 1.1rem;
+		height: 1.1rem;
+		color: var(--magenta-soft);
+		opacity: 0.9;
+	}
+
+	.site-panel__nav a:hover,
+	.site-panel__nav a.is-active {
+		color: var(--ink);
+	}
+
+	.site-panel__nav a.is-active {
+		color: var(--magenta-soft);
+	}
+
+	.site-panel__foot {
+		display: grid;
+		gap: 0.75rem;
+		margin-top: 1.1rem;
+	}
+
+	.site-panel__buy {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 2.85rem;
+		border-radius: 999px;
+		background: #fff;
+		color: #09090b;
+		font-weight: 600;
+	}
+
+	.site-panel__buy:hover {
+		background: #e4e4e7;
+		color: #09090b;
+	}
+
+	@media (max-width: 1024px) {
+		.site-nav,
+		.site-tools__lang {
+			display: none;
+		}
+
+		.site-brand {
+			display: block;
+			flex: 1 1 auto;
+			min-width: 0;
+			max-width: none;
+		}
+
+		.site-header__bar {
+			justify-content: space-between;
+			gap: 0.55rem;
+		}
+
+		.site-tools__buy {
+			min-height: var(--touch-min, 2.75rem);
+			padding-inline: 0.85rem;
+			font-size: 0.8rem;
+			flex-shrink: 0;
+		}
+
+		.site-menu {
+			display: inline-flex;
+		}
+
+		.site-header.is-open {
+			background: var(--bg);
+		}
+
+		.site-panel {
+			max-height: calc(100dvh - var(--header-h) - var(--safe-top, 0px) - var(--safe-bottom, 0px));
+		}
+	}
+
+	@media (max-width: 480px) {
+		.site-brand {
+			font-size: 0.9rem;
+		}
+
+		.site-tools {
+			gap: 0.4rem;
+		}
+
+		.site-tools__buy {
+			padding-inline: 0.7rem;
+		}
+	}
+
+	@media (max-width: 360px) {
+		.site-tools__buy span {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
+		}
+
+		.site-tools__buy {
+			padding-inline: 0.7rem;
+			min-width: var(--touch-min);
+			justify-content: center;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.site-header,
+		.site-nav a,
+		.site-tools__buy,
+		.site-menu__bars span,
+		.site-panel {
+			transition: none;
+			animation: none;
+		}
+
+		.site-tools__buy:hover {
+			transform: none;
+		}
+	}
+</style>
